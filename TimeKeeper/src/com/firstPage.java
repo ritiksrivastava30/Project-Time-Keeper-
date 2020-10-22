@@ -125,7 +125,9 @@ public class firstPage extends JFrame implements Runnable{
         b5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("hello");
+                ZoneClock zz= new ZoneClock();
+                Thread z =new Thread(zz);
+                z.start();
             }
         });
         contentPane.add(b5);
