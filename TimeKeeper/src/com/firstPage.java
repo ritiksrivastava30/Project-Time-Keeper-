@@ -85,7 +85,7 @@ public class firstPage extends JFrame implements Runnable{
         b1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("hello");
+                StopWatch.openStopWatch();
             }
         });
         contentPane.add(b1);
