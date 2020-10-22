@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.ZoneId;
+import java.util.Calendar;
 
 import static java.lang.Thread.sleep;
 
@@ -85,7 +86,8 @@ public class firstPage extends JFrame implements Runnable{
         b1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StopWatch.openStopWatch();
+                StopWatch sW= new StopWatch();
+                sW.start();
             }
         });
         contentPane.add(b1);
@@ -137,7 +139,7 @@ public class firstPage extends JFrame implements Runnable{
         b6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("hello");
+                new Calender();
             }
         });
         contentPane.add(b6);
