@@ -105,7 +105,7 @@ public class firstPage extends JFrame implements Runnable{
         b3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("hello");
+                TimerPage.timer();
             }
         });
         contentPane.add(b3);
