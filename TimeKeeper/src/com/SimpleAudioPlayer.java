@@ -12,7 +12,7 @@ public class SimpleAudioPlayer
     static Clip clip;
 
     AudioInputStream audioInputStream;
-    static String filePath;
+    static File filePath;
 
     // constructor to initialize streams and clip
     public SimpleAudioPlayer()
@@ -21,7 +21,7 @@ public class SimpleAudioPlayer
     {
         // create AudioInputStream object
         audioInputStream =
-                AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+                AudioSystem.getAudioInputStream(new File(String.valueOf(filePath)).getAbsoluteFile());
 
         // create clip reference
         clip = AudioSystem.getClip();
@@ -37,8 +37,6 @@ public class SimpleAudioPlayer
     {
         try
         {
-
-            filePath = "src\\com\\sim.wav";
             SimpleAudioPlayer audioPlayer =
                     new SimpleAudioPlayer();
 

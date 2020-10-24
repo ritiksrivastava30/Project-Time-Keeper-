@@ -126,9 +126,7 @@ public class AlarmClock {
                 Play kk = new Play();
                 Thread ming = new Thread(kk);
                 ming.start();
-
             }
-
         });
         b4.addActionListener(new ActionListener() {
             @Override
@@ -136,6 +134,39 @@ public class AlarmClock {
                 SimpleAudioPlayer.currentFrame = 0L;
                 SimpleAudioPlayer.clip.stop();
                 SimpleAudioPlayer.clip.close();
+            }
+        });
+        SimpleAudioPlayer.filePath = new File("src\\com\\sim.wav");
+        b5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fc = new JFileChooser();
+                fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                fc.showDialog(f, "Select");
+                if (fc.getSelectedFile() != null) {
+                    SimpleAudioPlayer.filePath= fc.getSelectedFile();
+                   //System.out.println(fc.getSelectedFile());
+                    // rootDirectoryField.setText(fc.getSelectedFile().getAbsolutePath());
+                }
+
+            }
+
+        });
+        b7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SimpleAudioPlayer.currentFrame = 0L;
+                SimpleAudioPlayer.clip.stop();
+                int clicked =0;
+                if(clicked<3){
+                    p2=p2+2;
+                    Play kk = new Play();
+                    Thread ming = new Thread(kk);
+                    ming.start();
+                    clicked++;
+                }
+
+
             }
         });
 
