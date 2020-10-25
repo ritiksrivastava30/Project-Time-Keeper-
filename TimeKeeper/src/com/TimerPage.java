@@ -30,8 +30,8 @@ public class TimerPage {
         frame.add(panel);
 
         time = new JLabel("Enter Time (hh/mm/ss):");
-        time.setBounds(50, 50, 150, 25);
-        time.setFont(new Font("Serif", Font.PLAIN, 15));
+        time.setBounds(40, 50, 200, 25);
+        time.setFont(new Font("Serif", Font.PLAIN, 20));
         panel.add(time);
 
         //spinner for hour
@@ -104,7 +104,7 @@ public class TimerPage {
         });
 
         back10 = new JButton("Back to Home Page");
-        back10.setBounds(130, 200, 150, 35);
+        back10.setBounds(150, 200, 150, 35);
         panel.add(back10);
         back10.addActionListener(new ActionListener() {
             @Override
@@ -115,7 +115,7 @@ public class TimerPage {
         });
 
         start = new JButton("Start Timer");
-        start.setBounds(130, 125, 150, 30);
+        start.setBounds(150, 125, 150, 40);
         //Start Timer is clicked
         start.addActionListener(new ActionListener() {
             @Override
@@ -155,7 +155,7 @@ public class TimerPage {
             back21.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    frame2.setVisible(false);
+                    //frame2.setVisible(false);
                     frame.setVisible(true);
                 }
             });
