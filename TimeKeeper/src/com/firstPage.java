@@ -3,12 +3,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
 
@@ -25,6 +29,8 @@ public class firstPage extends JFrame implements Runnable{
     private JLabel l2;
     private JLabel l3;
     private JPanel contentPane;
+    private File file;
+    private String temp;
     public static ZoneId zone = ZoneId.systemDefault();
     //ZoneClock zz;
     public void run(){
@@ -47,7 +53,24 @@ public class firstPage extends JFrame implements Runnable{
             }
         }
     }
-    public firstPage() {
+    public firstPage() throws IOException {
+        file = new File("./alarms.txt");
+        if (file.exists()) {
+            Scanner sc = new Scanner(file); //generating an input stream
+            try {
+                while (sc.hasNextLine()) {
+                    temp = sc.nextLine();
+                    AlarmClock.ls.addElement(temp);
+                    Play.setAlarm(Integer.parseInt(temp.substring(2,4)),Integer.parseInt(temp.substring(5,7)));
+                }
+                sc.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            file.createNewFile(); //creating new file, if any file of given name does not exists
+        }
+
         createUIComponents();
     }
 

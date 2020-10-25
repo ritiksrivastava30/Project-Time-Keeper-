@@ -1,11 +1,15 @@
 package com;
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,6 +21,7 @@ public class AlarmClock {
     private JSpinner s2;
     private JTextField t1;
     private JTextField t2;
+    private JButton b;
     private JButton b1;
     private JLabel l1;
     private JLabel l2;
@@ -29,17 +34,133 @@ public class AlarmClock {
     private JButton b5;
     private JButton b6;
     private JButton b7;
+    private JFrame f,fr,fr2;
+    private JPanel panel,panel2;
+    private JButton addAlarm;
+    private JList list;
+    private int index;
+    private JButton on;
+    private JButton off;
+    public int p1, p2;
+    public static String status="ON";
+    public static DefaultListModel<String> ls=new DefaultListModel<>();
+    DecimalFormat form = new DecimalFormat("00");
 
-    public static ZoneId zone = ZoneId.systemDefault();
-    public static int p1, p2;
-
-
-    public AlarmClock() {
-        createUIComponents();
+    public AlarmClock() { createUIComponents();
     }
 
+
     private void createUIComponents() {
-        JFrame f = new JFrame();
+        fr = new JFrame();
+        fr.setSize(500, 500);
+        panel = new JPanel();
+        panel.setLayout(null);
+        fr.add(panel);
+
+        JLabel info = new JLabel("ALARMS");
+        info.setBounds(200, 15, 300, 50);
+        info.setFont(new Font("Serif", Font.PLAIN, 25));
+        panel.add(info);
+
+        addAlarm = new JButton("Add Alarm");
+        addAlarm.setBounds(100, 85, 300, 40);
+        panel.add(addAlarm);
+
+        list = new JList(ls);
+        list.setBounds(75, 150, 335, 2000);
+        list.setFont(new Font("Serif", Font.PLAIN, 26));
+        panel.add(list);
+
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                index = list.getSelectedIndex();
+                //fr.setVisible(false);
+                fr2=new JFrame();
+                fr2.setSize(300,250);
+                panel2=new JPanel();
+                panel2.setLayout(null);
+                fr2.add(panel2);
+
+                JLabel lb = new JLabel(ls.get(index).substring(2,8));
+                lb.setBounds(110, 30, 200, 40);
+                lb.setFont(new Font("Serif", Font.BOLD, 45));
+                panel2.add(lb);
+
+                JLabel st = new JLabel("Status: ");
+                st.setBounds(25, 100, 100, 30);
+                st.setFont(new Font("Serif", Font.PLAIN, 25));
+                panel2.add(st);
+
+                on=new JButton("ON");
+                on.setBounds(120,100,80,30);
+                panel2.add(on);
+                on.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        on.setEnabled(false);
+                        ls.set(index,ls.get(index).replaceAll("OFF","ON"));
+                        Play.pl.get(index).resume();
+                        off.setEnabled(true);
+                        //dataUpdate();
+                    }
+                });
+
+                off=new JButton("OFF");
+                off.setBounds(200,100,80,30);
+                panel2.add(off);
+                off.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        ls.set(index,ls.get(index).replaceAll("ON","OFF"));
+                        Play.pl.get(index).suspend();
+                        on.setEnabled(true);
+                        off.setEnabled(false);
+                        //dataUpdate();
+                    }
+                });
+
+                if(ls.get(index).substring(ls.get(index).length()-2,ls.get(index).length()).equals("ON"))
+                    on.setEnabled(false);
+                else
+                    off.setEnabled(false);
+
+                JButton delete=new JButton("Delete Alarm");
+                delete.setBounds(60,150,180,30);
+                panel2.add(delete);
+                delete.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        ls.remove(index);
+                        fr2.dispose();
+                        Play.pl.get(index).stop();
+                        Play.pl.remove(index);
+                        Play.i--;
+                        //dataUpdate();
+                    }
+                });
+                fr2.setVisible(true);
+                list.clearSelection();
+            }
+        });
+
+
+        addAlarm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                alarmDetails();
+            }
+        });
+        fr.setVisible(true);
+        fr.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dataUpdate();
+            }
+        });
+    }
+    private void alarmDetails(){
+        f = new JFrame();
         f.setTitle("Set Alarm");
         f.setSize(300, 400);
         Content = new JPanel();
@@ -52,10 +173,10 @@ public class AlarmClock {
         s1 = new JSpinner(value);
         s1.setBounds(50, 120, 50, 30);
         t1 = new JTextField("");
-        t1.setBounds(50, 70, 50, 18);
+        t1.setBounds(50, 70, 50, 25);
         t1.setEditable(false);
         b1 = new JButton("Set hr");
-        b1.setBounds(35, 170, 80, 20);
+        b1.setBounds(35, 170, 80, 30);
         l2 = new JLabel("min: ");
         l2.setBounds(200, 90, 50, 30);
         // s2=new JSpinner();
@@ -63,25 +184,19 @@ public class AlarmClock {
         s2 = new JSpinner(va);
         s2.setBounds(200, 120, 50, 30);
         t2 = new JTextField("");
-        t2.setBounds(200, 70, 50, 18);
+        t2.setBounds(200, 70, 50, 25);
         t2.setEditable(false);
         b2 = new JButton("Set min");
-        b2.setBounds(185, 170, 80, 20);
+        b2.setBounds(185, 170, 80, 30);
         b3 = new JButton("Set Alarm");
-        b3.setBounds(100, 210, 100, 20);
+        b3.setBounds(100, 230, 100, 40);
         l3 = new JLabel("Alarm set at : ");
         l3.setBounds(30, 20, 100, 30);
         t4 = new JTextField("");
-        t4.setBounds(110, 29, 80, 18);
+        t4.setBounds(110, 29, 80, 25);
         t4.setEditable(false);
-        b4 = new JButton("Stop,I,m up");
-        b4.setBounds(100, 245, 100, 25);
-        b5 = new JButton("More");
-        b5.setBounds(180, 320, 80, 20);
-        b6 = new JButton("Back");
-        b6.setBounds(25, 320, 80, 20);
-        b7 = new JButton("Snooze");
-        b7.setBounds(100,285,100,20);
+        b5 = new JButton("Choose Audio");
+        b5.setBounds(90, 300, 120, 30);
 
 
 
@@ -96,10 +211,7 @@ public class AlarmClock {
         Content.add(l3);
         Content.add(t4);
         Content.add(b3);
-        Content.add(b4);
         Content.add(b5);
-        Content.add(b6);
-        Content.add(b7);
         f.setContentPane(Content);
         f.setLayout(null);
         f.setVisible(true);
@@ -120,22 +232,16 @@ public class AlarmClock {
         b3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                t4.setText(t1.getText() + ":" + t2.getText());
+                ls.addElement("  "+form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText()))+"                Status: "+status);
+                t4.setText(form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText())));
                 p1 = (int) s1.getValue();
                 p2 = (int) s2.getValue();
-                Play kk = new Play();
-                Thread ming = new Thread(kk);
-                ming.start();
+                Play.setAlarm(p1,p2);
+                //dataUpdate();
             }
+
         });
-        b4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SimpleAudioPlayer.currentFrame = 0L;
-                SimpleAudioPlayer.clip.stop();
-                SimpleAudioPlayer.clip.close();
-            }
-        });
+
         SimpleAudioPlayer.filePath = new File("src\\com\\sim.wav");
         b5.addActionListener(new ActionListener() {
             @Override
@@ -145,32 +251,28 @@ public class AlarmClock {
                 fc.showDialog(f, "Select");
                 if (fc.getSelectedFile() != null) {
                     SimpleAudioPlayer.filePath= fc.getSelectedFile();
-                   //System.out.println(fc.getSelectedFile());
-                    // rootDirectoryField.setText(fc.getSelectedFile().getAbsolutePath());
                 }
 
             }
 
         });
-        b7.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SimpleAudioPlayer.currentFrame = 0L;
-                SimpleAudioPlayer.clip.stop();
-                int clicked =0;
-                if(clicked<3){
-                    p2=p2+2;
-                    Play kk = new Play();
-                    Thread ming = new Thread(kk);
-                    ming.start();
-                    clicked++;
-                }
 
-
+    }
+    private void dataUpdate(){
+        //creating file output stream
+        String st;
+        int i;
+        try {
+            FileWriter fileWriter = new FileWriter("./alarms.txt", false);
+            for (i = 0; i < ls.size(); i++) {
+                st = ls.get(i);
+                fileWriter.write(st + "\n");
             }
-        });
-
-
+            fileWriter.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 }
