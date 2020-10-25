@@ -17,11 +17,8 @@ Flow of Program:
 package com;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -79,7 +76,6 @@ public class Event {
             file.createNewFile(); //creating new file, if any file of given name does not exists
         }
     }
-
     public static void openEvent() throws IOException {
         Event obj = new Event();
         obj.showEventListPage();
@@ -95,6 +91,13 @@ public class Event {
         panel.setPreferredSize(new Dimension(250, 3500));
         panel.setLayout(null);
         frame.getContentPane().add(jsp);
+        //creating file output stream when close button is clicked i.e. Event frame is closed
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dataUpdate();
+            }
+        });
 
         JLabel info = new JLabel("List of Events");
         info.setBounds(175, 15, 300, 50);
@@ -111,6 +114,7 @@ public class Event {
         back10.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                dataUpdate();
                 frame.dispose();
                 Main.visibilty(true);
             }
@@ -138,15 +142,15 @@ public class Event {
         });
 
         // adding an Action Listener when any List Item on the screen is Clicked
-        listOfName.addListSelectionListener(new ListSelectionListener() {
+        listOfName.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void mousePressed(MouseEvent e) {
                 //index variable will have the index of selected item from the List
                 int index = listOfName.getSelectedIndex();
                 frame3 = new JFrame();
                 panel3 = new JPanel();
                 frame3.setSize(500, 500);
-                frame3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                //frame3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 panel3.setLayout(null);
                 frame3.add(panel3);
                 frame.dispose();
@@ -252,19 +256,19 @@ public class Event {
                         frame3.dispose();
                         frame.dispose();
                         showEventListPage();
-                        dataUpdate();
+                        //dataUpdate();
                     }
                 });
-            }
-        });
-    }
 
+            }
+            });
+        }
     //function that will create a form type template to fill details
     private void createEventForm() {
         frame2 = new JFrame();
         panel2 = new JPanel();
         frame2.setSize(500, 500);
-        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panel2.setLayout(null);
         frame2.add(panel2);
         frame.setVisible(false);
@@ -375,7 +379,7 @@ public class Event {
         frame2.dispose();
         frame.dispose();
         showEventListPage();
-        dataUpdate();
+        //dataUpdate();
     }
     private void dataUpdate(){
         //creating file output stream
