@@ -43,7 +43,7 @@ public class Play extends Thread {
             DateTimeFormatter format1 = DateTimeFormatter.ofPattern("mm");
             String formatDateTime1 = now1.format(format1);
             int mins = Integer.parseInt(formatDateTime1);
-            if (AlarmClock.status=="ON" && a == hours && b == mins) {
+            if (a == hours && b == mins) {
                 alarmTime();
                 SimpleAudioPlayer.vain();
                 break;

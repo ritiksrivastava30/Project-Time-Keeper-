@@ -42,7 +42,6 @@ public class AlarmClock {
     private JButton on;
     private JButton off;
     public int p1, p2;
-    public static String status="ON";
     public static DefaultListModel<String> ls=new DefaultListModel<>();
     DecimalFormat form = new DecimalFormat("00");
 
@@ -232,7 +231,7 @@ public class AlarmClock {
         b3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ls.addElement("  "+form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText()))+"                Status: "+status);
+                ls.addElement("  "+form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText()))+"                Status: ON");
                 t4.setText(form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText())));
                 p1 = (int) s1.getValue();
                 p2 = (int) s2.getValue();
