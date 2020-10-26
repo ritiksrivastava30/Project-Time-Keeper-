@@ -1,0 +1,7 @@
+Asia/Ho_Chi_Minh
+Europe/Paris
+America/Los_Angeles
+Asia/Kolkata
+Africa/Harare
+$
+Asia/Kolkata

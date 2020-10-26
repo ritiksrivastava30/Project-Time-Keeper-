@@ -6,6 +6,9 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.FileWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.*;
@@ -24,13 +27,19 @@ public class ZoneClock implements Runnable{
     private JTextArea ta1;
     private JButton bt2;
     private JButton bt3;
-    private ArrayList<ZoneId> list=new ArrayList<>();
+    public static ArrayList<ZoneId> list=new ArrayList<>();
 
     public ZoneClock(){
         JFrame f= new JFrame();
         //super("ZoneClock");
         f.setTitle("ZoneClock");
         f.setSize(500, 500);
+        f.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                updateData();
+            }
+        });
         contPane= new JPanel();
         contPane.setBounds(100,100,500,500);
         contPane.setBackground(new Color(204, 255, 204));
@@ -144,6 +153,25 @@ public class ZoneClock implements Runnable{
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void updateData(){
+        ZoneId st;
+        int i;
+        try {
+            FileWriter fileWriter = new FileWriter("./Zonedata.txt", false);
+            for (i = 0; i < list.size(); i++) {
+                st = list.get(i);
+                fileWriter.write(st + "\n");
+            }
+            fileWriter.write("$\n");
+            st= firstPage.zone;
+            fileWriter.write(st + "\n");
+            fileWriter.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

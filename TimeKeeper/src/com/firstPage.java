@@ -54,6 +54,27 @@ public class firstPage extends JFrame implements Runnable{
         }
     }
     public firstPage() throws IOException {
+        file = new File("./Zonedata.txt");
+        String temp1;
+        if (file.exists()) {
+            try {
+                Scanner sc = new Scanner(file); //generating an input stream
+                while (sc.hasNextLine()) {
+                    temp1 = sc.nextLine();
+                    if (temp1.equals("$"))
+                        break;
+                    ZoneClock.list.add(ZoneId.of(temp1));
+                }
+                temp1= sc.nextLine();
+                firstPage.zone= ZoneId.of(temp1);
+                sc.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            file.createNewFile(); //creating new file, if any file of given name does not exists
+        }
+
         file = new File("./alarms.txt");
         if (file.exists()) {
             Scanner sc = new Scanner(file); //generating an input stream
