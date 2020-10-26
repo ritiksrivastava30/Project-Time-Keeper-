@@ -133,6 +133,7 @@ public class Event {
                 frame3.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
+                        if(frame!=null)
                         frame.setVisible(true);
                     }
                 });
