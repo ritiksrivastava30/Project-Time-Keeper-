@@ -1,0 +1,4 @@
+Europe/Paris
+Pacific/Apia
+$
+Asia/Karachi
