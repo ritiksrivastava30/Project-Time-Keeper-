@@ -24,58 +24,30 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
 
 public class Event {
     JFrame frame, frame2, frame3;
     JPanel panel, panel2, panel3;
-    JButton addEvent, addingEvent, deleteEvent, setReminder, back31, back10, back21, editEvent;//back31 represents back button to go back from frame 3 to frame 1
-    JList listOfName, listOfSchedule;
+    JButton addEvent, addingEvent, deleteEvent, back31, back10, back21, editEvent;//back31 represents back button to go back from frame 3 to frame 1
+    static JList listOfName, listOfSchedule;
     JTextArea descriptionArea, enteredDescription;
-    JLabel nameOfEvent, date, time, description, showDescription, showTime, showDate, showName;
+    JLabel nameOfEvent, dateLabel, time, description, showDescription, showTime, showDate, showName;
     JTextField nameEntry;
     SpinnerModel spinnerModel1, spinnerModel3, spinnerModel4, spinnerModel5;
     JSpinner spinner, spinner2, spinner3, spinner4, spinner5;
-    DecimalFormat form;
-    ArrayList<String> eventNames = new ArrayList<String>(); //an Array List to store name of Events
-    ArrayList<String> dateOfEvents = new ArrayList<String>(); //an Array List to store date and time of any Event
-    ArrayList<String> descriptionOfEvents = new ArrayList<String>(); //an Array List to store Description of Events as entered by the user
+    DecimalFormat form=new DecimalFormat("00");
+    static DefaultListModel<String> eventNames = new DefaultListModel<>(); //an Array List to store name of Events
+    static DefaultListModel<String> dateOfEvents = new DefaultListModel<>(); //an Array List to store date and time of any Event
+    static DefaultListModel<String> descriptionOfEvents = new DefaultListModel<>(); //an Array List to store Description of Events as entered by the user
     int newEventAdditionIndex;
-    File file;
+    private static int index;
+    private int date,year,hour,minute;
+    private String monthName;
+    public static JLabel msg;
+    public static JButton remind, cancelRemind;
+    ArrayList<String> months = new ArrayList<String>(Arrays.asList("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"));
 
-    public Event() throws IOException {
-        file = new File("./data.txt");
-        String temp;
-        if (file.exists()) {
-            Scanner sc = new Scanner(file); //generating an input stream
-            try {
-                while (sc.hasNextLine()) {
-                    temp = sc.nextLine();
-                    if (temp.equals("$"))
-                        break;
-                    eventNames.add(temp);
-                }
-                while (sc.hasNextLine()) {
-                    temp = sc.nextLine();
-                    if (temp.equals("$"))
-                        break;
-                    dateOfEvents.add(temp);
-                }
-                while (sc.hasNextLine()) {
-                    temp = sc.nextLine();
-                    if (temp.equals("$"))
-                        break;
-                    temp = temp.replace('^', '\n');
-                    descriptionOfEvents.add(temp);
-                }
-                sc.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            file.createNewFile(); //creating new file, if any file of given name does not exists
-        }
-    }
     public static void openEvent() throws IOException {
         Event obj = new Event();
         obj.showEventListPage();
@@ -120,15 +92,12 @@ public class Event {
             }
         });
 
-        //converting Array List to array, so that it could be passed as an argument to a JList
-        Object[] str = eventNames.toArray();
-        listOfName = new JList(str);
+        listOfName = new JList(eventNames);
         listOfName.setBounds(25, 150, 240, 3500);
         listOfName.setFont(new Font("Serif", Font.PLAIN, 26));
         panel.add(listOfName);
 
-        Object[] ptr = dateOfEvents.toArray();
-        listOfSchedule = new JList(ptr);
+        listOfSchedule = new JList(dateOfEvents);
         listOfSchedule.setBounds(265, 150, 180, 3500);
         listOfSchedule.setEnabled(false);
         panel.add(listOfSchedule);
@@ -141,23 +110,35 @@ public class Event {
             }
         });
 
+
         // adding an Action Listener when any List Item on the screen is Clicked
         listOfName.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 //index variable will have the index of selected item from the List
-                int index = listOfName.getSelectedIndex();
+                frame.setVisible(false);
+                index = listOfName.getSelectedIndex();
+                showDetails(index);
+            }
+            });
+        }
+        public void showDetails(int index){
                 frame3 = new JFrame();
                 panel3 = new JPanel();
                 frame3.setSize(500, 500);
                 //frame3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 panel3.setLayout(null);
                 frame3.add(panel3);
-                frame.dispose();
                 frame3.setVisible(true);
-
+                frame3.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        frame.setVisible(true);
+                    }
+                });
                 showName = new JLabel(eventNames.get(index));
-                showName.setBounds(150, 20, 400, 100);
+                showName.setHorizontalAlignment(SwingConstants.CENTER);
+                showName.setBounds(0, 25, 500, 100);
                 showName.setFont(new Font("Serif", Font.PLAIN, 50));
                 panel3.add(showName);
 
@@ -187,13 +168,28 @@ public class Event {
                 jsp.setBounds(160, 230, 225, 100);
                 panel3.add(jsp);
 
-                setReminder = new JButton("Set Reminder");
-                setReminder.setBounds(160, 350, 125, 35);
-                panel3.add(setReminder);
+                int flag = 0,h;
+                for (h = 0; h < Reminder.reminders.size(); h++) {
+                    if (Integer.parseInt(Reminder.reminders.get(h).substring(15)) == index) {
+                        flag = 1;
+                        break;
+                    }
+                }
 
-                editEvent=new JButton("Edit");
+                int l = dateOfEvents.get(2 * index).length();
+                monthName = "";
+                //copying date from String Array
+                date = Integer.parseInt(dateOfEvents.get(2 * index).substring(3, 5));
+                //copying month name from String Array
+                monthName = monthName + dateOfEvents.get(2 * index).substring(6, l - 5);
+                year = Integer.parseInt(dateOfEvents.get(2 * index).substring(l - 4, l));
+                hour = Integer.parseInt(dateOfEvents.get(2 * index + 1).substring(3, 5));
+                minute = Integer.parseInt(dateOfEvents.get(2 * index + 1).substring(6, 8));
+
+                editEvent = new JButton("Edit");
                 editEvent.setBounds(380, 15, 80, 30);
                 panel3.add(editEvent);
+                String finalMonthName = monthName;
                 editEvent.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -201,34 +197,74 @@ public class Event {
                         createEventForm();
                         nameEntry.setText(eventNames.get(index));
                         descriptionArea.setText(descriptionOfEvents.get(index));
-                        int l=dateOfEvents.get(2*index).length(),x=0,i=3;
-                        String monthName="";
-                        //copying date from String Array
-                        while((int)dateOfEvents.get(2*index).charAt(i)>48 && (int)dateOfEvents.get(2*index).charAt(i)<58){
-                            x=x*10;
-                            x=x+((int)dateOfEvents.get(2*index).charAt(i)-48);
-                            i++;
-                        }
-                        //copying month name from String Array
-                        for(int j=i+1;j<l-5;j++){
-                            monthName=monthName+dateOfEvents.get(2*index).charAt(j);
-                        }
+
                         //setting up initial values to all the fields so that user will get the data copied and have to edit in that only
-                        spinner.setValue(x);
+                        spinner.setValue(date);
                         spinner2.setValue(monthName);
-                        spinner3.setValue(Integer.parseInt(dateOfEvents.get(2*index).substring(l-4,l)));
-                        spinner4.setValue(Integer.parseInt(dateOfEvents.get(2*index+1).substring(3,5)));
-                        spinner5.setValue(Integer.parseInt(dateOfEvents.get(2*index+1).substring(6,8)));
+                        spinner3.setValue(year);
+                        spinner4.setValue(hour);
+                        spinner5.setValue(minute);
                         eventNames.remove(index);
                         descriptionOfEvents.remove(index);
-                        dateOfEvents.remove(2*index);
-                        dateOfEvents.remove(2*index);
-                        newEventAdditionIndex=index;
+                        dateOfEvents.remove(2 * index);
+                        dateOfEvents.remove(2 * index);
+                        newEventAdditionIndex = index;
                         back21.setText("Discard");
                         addingEvent.setText("Save");
                     }
                 });
 
+                msg = new JLabel();
+                msg.setBounds(140, 340, 250, 35);
+//                if (flag == 1)
+//                    msg.setVisible(true);
+//                else
+//                    msg.setVisible(false);
+                panel3.add(msg);
+
+                remind = new JButton("Set Reminder");
+                remind.setBounds(160, 372, 140, 35);
+                panel3.add(remind);
+                if (flag == 1) {
+                    remind.setVisible(false);
+                    msg.setText("Reminder is enabled on "+ Reminder.reminders.get(h).substring(5,15)+" at "+ Reminder.reminders.get(h).substring(0,5));
+                }
+                else {
+                    remind.setVisible(true);
+                    msg.setText("");
+                }
+                remind.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int month = months.indexOf(monthName) + 1;
+                        new ReminderUI(hour,minute,date,month,year);
+//                        String remDate = form.format(date) + "-" + form.format(month) + "-" + form.format(year);
+//                        String remTime = form.format(hour) + ":" + form.format(minute);
+//                        Reminder.setReminder(remTime, remDate, index);
+//                        msg.setVisible(true);
+//                        remind.setVisible(false);
+//                        cancelRemind.setVisible(true);
+                    }
+                });
+
+                cancelRemind = new JButton("Cancel Reminder");
+                cancelRemind.setBounds(160, 375, 140, 35);
+                if (flag == 1)
+                    cancelRemind.setVisible(true);
+                else
+                    cancelRemind.setVisible(false);
+                panel3.add(cancelRemind);
+                cancelRemind.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        Reminder.remObj[index].stop();
+                        Reminder.deleteReminder(index);
+                        cancelRemind.setVisible(false);
+                        remind.setVisible(true);
+//                        msg.setVisible(false);
+                        msg.setText("");
+                    }
+                });
 
                 back31 = new JButton("Back");
                 back31.setBounds(15, 15, 80, 30);
@@ -243,26 +279,25 @@ public class Event {
                 });
 
                 deleteEvent = new JButton("Delete Event");
-                deleteEvent.setBounds(160, 400, 125, 35);
+                deleteEvent.setBounds(170, 415, 125, 35);
                 panel3.add(deleteEvent);
 
                 deleteEvent.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        frame3.dispose();
+                        frame.setVisible(true);
                         eventNames.remove(index);
                         descriptionOfEvents.remove(index);
                         dateOfEvents.remove(2 * index);
                         dateOfEvents.remove(2 * index);
-                        frame3.dispose();
-                        frame.dispose();
-                        showEventListPage();
+                        Reminder.remObj[index].stop();
+                        Reminder.deleteReminder(index);
                         //dataUpdate();
                     }
                 });
 
             }
-            });
-        }
     //function that will create a form type template to fill details
     private void createEventForm() {
         frame2 = new JFrame();
@@ -273,16 +308,22 @@ public class Event {
         frame2.add(panel2);
         frame.setVisible(false);
         frame2.setVisible(true);
+        frame2.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                frame.setVisible(true);
+            }
+        });
 
         nameOfEvent = new JLabel("Name of Event : ");
         nameOfEvent.setBounds(50, 50, 180, 25);
         nameOfEvent.setFont(new Font("Serif", Font.PLAIN, 15));
         panel2.add(nameOfEvent);
 
-        date = new JLabel("Enter Date(dd/mm/yyyy) : ");
-        date.setBounds(50, 100, 180, 25);
-        date.setFont(new Font("Serif", Font.PLAIN, 15));
-        panel2.add(date);
+        dateLabel = new JLabel("Enter Date(dd/mm/yyyy) : ");
+        dateLabel.setBounds(50, 100, 180, 25);
+        dateLabel.setFont(new Font("Serif", Font.PLAIN, 15));
+        panel2.add(dateLabel);
 
         time = new JLabel("Enter Time(hh/mm) : ");
         time.setBounds(50, 150, 180, 25);
@@ -342,7 +383,6 @@ public class Event {
         panel2.add(spinner5);
 
         newEventAdditionIndex=eventNames.size();
-        form = new DecimalFormat("00");
         back21= new JButton("Back");
         back21.setBounds(200,400,80,35);
         panel2.add(back21);
@@ -371,16 +411,20 @@ public class Event {
         //adding entered name to the eventNames ArrayList
         eventNames.add(index,nameEntry.getText());
         //adding DATE to dateOfEvents ArrayList
-        dateOfEvents.add(2*index,"on " + spinner.getValue().toString() + " " + spinner2.getValue().toString() + " " + spinner3.getValue().toString());
+        dateOfEvents.add(2*index,"on " + form.format(Integer.parseInt(spinner.getValue().toString())) + " " + spinner2.getValue().toString() + " " + spinner3.getValue().toString());
         //adding TIME to dateOfEvents ArrayList
         dateOfEvents.add(2*index+1,"at " + form.format(Integer.parseInt(spinner4.getValue().toString())) + ":" + form.format(Integer.parseInt(spinner5.getValue().toString())));
         //adding entered Description to descriptionOfEvents ArrayList
         descriptionOfEvents.add(index,descriptionArea.getText());
         frame2.dispose();
-        frame.dispose();
-        showEventListPage();
+        frame.setVisible(true);
         //dataUpdate();
     }
+
+    public static int getIndex() {
+        return index;
+    }
+
     private void dataUpdate(){
         //creating file output stream
         String st;
@@ -400,6 +444,11 @@ public class Event {
             for (i = 0; i < descriptionOfEvents.size(); i++) {
                 st = descriptionOfEvents.get(i);
                 st = st.replace('\n', '^');
+                fileWriter.write(st + "\n");
+            }
+            fileWriter.write("$\n");
+            for (i = 0; i < Reminder.reminders.size(); i++) {
+                st = Reminder.reminders.get(i);
                 fileWriter.write(st + "\n");
             }
             fileWriter.close();

@@ -71,6 +71,41 @@ public class firstPage extends JFrame implements Runnable{
             file.createNewFile(); //creating new file, if any file of given name does not exists
         }
 
+        file = new File("./data.txt");
+        String temp;
+        if (file.exists()) {
+            Scanner sc = new Scanner(file); //generating an input stream
+            try {
+                while (sc.hasNextLine()) {
+                    temp = sc.nextLine();
+                    if (temp.equals("$"))
+                        break;
+                    Event.eventNames.addElement(temp);
+                }
+                while (sc.hasNextLine()) {
+                    temp = sc.nextLine();
+                    if (temp.equals("$"))
+                        break;
+                    Event.dateOfEvents.addElement(temp);
+                }
+                while (sc.hasNextLine()) {
+                    temp = sc.nextLine();
+                    if (temp.equals("$"))
+                        break;
+                    temp = temp.replace('^', '\n');
+                    Event.descriptionOfEvents.addElement(temp);
+                }
+                while (sc.hasNextLine()) {
+                    temp = sc.nextLine();
+                    Reminder.setReminder(temp.substring(0,5),temp.substring(5,15),Integer.parseInt(temp.substring(15)));
+                }
+                sc.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            file.createNewFile(); //creating new file, if any file of given name does not exists
+        }
         createUIComponents();
     }
 

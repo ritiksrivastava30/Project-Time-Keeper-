@@ -18,7 +18,6 @@ public class Play extends Thread {
 
     int a, b;
     public static int i=0;
-//    public static Play[] obj=new Play[100];
     public static ArrayList<Play> pl=new ArrayList<>();
     JFrame frame;
     JPanel panel;
@@ -33,7 +32,6 @@ public class Play extends Thread {
         pl.add(new Play(hour,minute));
         pl.get(i).start();
         i++;
-        //System.out.println(kk.getId());
     }
     public void run() {
         int w1 = 0;

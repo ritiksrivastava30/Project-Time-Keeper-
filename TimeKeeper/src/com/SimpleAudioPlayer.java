@@ -12,7 +12,7 @@ public class SimpleAudioPlayer
     static Clip clip;
 
     AudioInputStream audioInputStream;
-    static File filePath;
+    static File filePath=new File("src\\com\\sim.wav");
 
     // constructor to initialize streams and clip
     public SimpleAudioPlayer()
