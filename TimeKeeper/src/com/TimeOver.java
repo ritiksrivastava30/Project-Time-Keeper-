@@ -19,7 +19,7 @@ import javax.swing.*;
 public class TimeOver {
     static Clip clip;
     AudioInputStream audioInputStream;
-    static String filePath="src\\com\\Track 1 (default).wav";
+    static String filePath="src\\com\\Tracks\\Track 1 (default).wav";
 
     // constructor to initialize streams and clip
     public TimeOver() throws UnsupportedAudioFileException,IOException, LineUnavailableException {

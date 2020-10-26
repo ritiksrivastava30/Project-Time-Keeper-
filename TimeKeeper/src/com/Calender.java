@@ -93,9 +93,6 @@ public class Calender {
         ta1= new JTextArea();
         ta1.setBounds(30,120, 320,150);
         ta1.setEditable(false);
-        l3= new JLabel(Month.of(Integer.parseInt(formatDateTime1)).name());
-        l3.setBounds(150,85, 100,40);
-        conPane.add(l3);
         calenderPrinter();
         conPane.add(l1);
         conPane.add(l2);
@@ -126,11 +123,10 @@ public class Calender {
         LocalDate localDate = LocalDate.of(yy, mm, dd);
         DayOfWeek dayOfWeek = DayOfWeek.from(localDate);
         pos= dayOfWeek.get(ChronoField.DAY_OF_WEEK) + 1;
-//        Month month = Month.from(localDate);
-//        l3= new JLabel(month.name()+"");
-//        l3.setBounds(150,85, 100,40);
-//        conPane.add(l3);
-        l3.setText(Month.of(mm).name());
+        Month month = Month.from(localDate);
+        l3= new JLabel(month.name()+"");
+        l3.setBounds(150,85, 100,40);
+        conPane.add(l3);
         while(dd!=1)
         { dd--;
             pos--;

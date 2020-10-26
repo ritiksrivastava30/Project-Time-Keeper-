@@ -12,7 +12,7 @@ public class TimerPage {
     JFrame frame;
     JPanel panel;
     JLabel time, soundSelect;
-    JButton playButton, select, start, back10;
+    JButton playButton, pauseButton, select, start, back10;
     SpinnerListModel spinnerList;
     SpinnerModel spinnerModel1, spinnerModel2, spinnerModel3;
     JSpinner spinner1, spinner2, spinner3, spinner4;
@@ -66,8 +66,13 @@ public class TimerPage {
         panel.add(soundSelect);
 
         playButton = new JButton("Play");
-        playButton.setBounds(335, 350, 60, 25);
+        playButton.setBounds(335, 350, 75, 25);
         panel.add(playButton);
+
+        pauseButton = new JButton("Pause");
+        pauseButton.setBounds(335, 350, 75, 25);
+        pauseButton.setVisible(false);
+        panel.add(pauseButton);
 
         //String Array containing the name of the Sound Tracks Available
         String[] Sounds = {"Track 1 (default)", "Track 2", "Track 3", "Track 4", "Track 5"};
@@ -78,7 +83,8 @@ public class TimerPage {
         spinner4.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                playButton.setEnabled(true);
+                pauseButton.setVisible(false);
+                playButton.setVisible(true);
                 SoundPlayer.stop();
             }
         });
@@ -86,14 +92,24 @@ public class TimerPage {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                playButton.setEnabled(false);
-                SoundPlayer.setFilePath("src\\com\\" + spinner4.getValue().toString() + ".wav");
+                SoundPlayer.setFilePath("src\\com\\Tracks\\" + spinner4.getValue().toString() + ".wav");
                 SoundPlayer.vain();
+                playButton.setVisible(false);
+                pauseButton.setVisible(true);
+            }
+        });
+
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SoundPlayer.stop();
+                pauseButton.setVisible(false);
+                playButton.setVisible(true);
             }
         });
 
         select = new JButton("Set");
-        select.setBounds(400, 350, 60, 25);
+        select.setBounds(417, 350, 60, 25);
         panel.add(select);
         select.addActionListener(new ActionListener() {
             @Override
@@ -147,7 +163,7 @@ public class TimerPage {
             counter.setFont(new Font("Serif", Font.CENTER_BASELINE, 40));
             panel2.add(counter);
             DecimalFormat form = new DecimalFormat("00");
-            String loc = "src\\com\\" + spinner4.getValue().toString() + ".wav";
+            String loc = "src\\com\\Tracks\\" + spinner4.getValue().toString() + ".wav";
 
             //Background Button
             JButton back21 = new JButton("Run in Background");
