@@ -65,8 +65,10 @@ public class firstPage extends JFrame implements Runnable{
                         break;
                     ZoneClock.list.add(ZoneId.of(temp1));
                 }
-                temp1= sc.nextLine();
-                firstPage.zone= ZoneId.of(temp1);
+                if(sc.hasNextLine()) {
+                    temp1 = sc.nextLine();
+                    firstPage.zone = ZoneId.of(temp1);
+                }
                 sc.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
