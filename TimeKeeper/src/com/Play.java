@@ -17,12 +17,10 @@ import java.util.GregorianCalendar;
 
 public class Play extends Thread {
 
-    int a, b,clicked;
+    int a, b;
     public static int i=0;
     public static ArrayList<Play> pl=new ArrayList<>();
-    JFrame frame;
-    JPanel panel;
-    DecimalFormat form = new DecimalFormat("00");
+    public static String path;//="src\\com\\sim.wav";
 
     public Play(int h, int m) {
         this.a = h;
@@ -35,8 +33,11 @@ public class Play extends Thread {
         i++;
     }
     public void run() {
-        int w1 = 0;
-        while (w1 == 0) {
+        String path1=path;
+        System.out.println(path1);
+        while (true) {
+            int a1=a;
+            int b1=b;
             LocalDateTime now1 = LocalDateTime.now();
             DateTimeFormatter format2 = DateTimeFormatter.ofPattern("HH");
             String formatDateTime2 = now1.format(format2);
@@ -44,9 +45,10 @@ public class Play extends Thread {
             DateTimeFormatter format1 = DateTimeFormatter.ofPattern("mm");
             String formatDateTime1 = now1.format(format1);
             int mins = Integer.parseInt(formatDateTime1);
-            if (a == hours && b == mins && dayCheck()==1) {
-                alarmTime();
+            if (a1 == hours && b1 == mins && dayCheck()==1) {
+                SimpleAudioPlayer.setFilePath(path1);
                 SimpleAudioPlayer.vain();
+                alarmTime();
                 break;
             }
         }
@@ -56,12 +58,13 @@ public class Play extends Thread {
         return (Integer.parseInt(String.valueOf(AlarmClock.flags.get(i-1).charAt(d.getDay()))));
     }
     public void alarmTime () {
-        frame=new JFrame();
+        JFrame frame=new JFrame();
         frame.setSize(250,250);
         frame.setTitle("Alarm");
-        panel=new JPanel();
+        JPanel panel=new JPanel();
         panel.setLayout(null);
         frame.add(panel);
+        DecimalFormat form = new DecimalFormat("00");
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -99,11 +102,11 @@ public class Play extends Thread {
         JButton snooze=new JButton("Snooze");
         snooze.setBounds(125,140,100,35);
         panel.add(snooze);
-        clicked =0;
+//        clicked =0;
         snooze.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(clicked<3){
+                //if(clicked<3){
                     SimpleAudioPlayer.clip.stop();
                     frame.setVisible(false);
                     try{
@@ -114,12 +117,12 @@ public class Play extends Thread {
                     }
                     SimpleAudioPlayer.vain();
                     frame.setVisible(true);
-                    clicked++;
-                }
-                else{
-                    snooze.setEnabled(false);
-                    m.setVisible(true);
-                }
+//                    clicked++;
+//                }
+//                else{
+//                    snooze.setEnabled(false);
+//                    m.setVisible(true);
+//                }
             }
         });
 

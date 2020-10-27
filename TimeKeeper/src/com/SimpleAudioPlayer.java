@@ -12,7 +12,7 @@ public class SimpleAudioPlayer
     static Clip clip;
 
     AudioInputStream audioInputStream;
-    static File filePath=new File("src\\com\\sim.wav");
+    static String filePath;//=new File("C:\\Users\\RITIK SRIVASTAVA\\Documents\\Tracks\\Track 3.wav");
 
     // constructor to initialize streams and clip
     public SimpleAudioPlayer()
@@ -20,6 +20,7 @@ public class SimpleAudioPlayer
             IOException, LineUnavailableException
     {
         // create AudioInputStream object
+//        System.out.println(firstPage);
         audioInputStream =
                 AudioSystem.getAudioInputStream(new File(String.valueOf(filePath)).getAbsoluteFile());
 
@@ -53,6 +54,9 @@ public class SimpleAudioPlayer
         }
     }
     // Method to play the audio
+    public static void setFilePath(String nameOfSong){
+        filePath = nameOfSong;
+    }
     public void play()
     {
         //start the clip

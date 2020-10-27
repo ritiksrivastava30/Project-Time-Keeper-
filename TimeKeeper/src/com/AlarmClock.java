@@ -45,6 +45,9 @@ public class AlarmClock {
         fr.setSize(500, 500);
         panel = new JPanel();
         panel.setLayout(null);
+        JScrollPane sp=new JScrollPane(panel);
+        panel.setPreferredSize(new Dimension(250,2000));
+        fr.getContentPane().add(sp);
         fr.add(panel);
 
         JLabel info = new JLabel("ALARMS");
@@ -60,6 +63,7 @@ public class AlarmClock {
         list.setBounds(75, 150, 335, 2000);
         list.setFont(new Font("Serif", Font.PLAIN, 26));
         panel.add(list);
+
 
         list.addMouseListener(new MouseAdapter() {
             @Override
@@ -257,6 +261,7 @@ public class AlarmClock {
         addAlarm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Play.path="src\\com\\sim.wav";
                 alarmDetails();
             }
         });
@@ -374,7 +379,7 @@ public class AlarmClock {
 
         });
 
-        SimpleAudioPlayer.filePath = new File("src\\com\\sim.wav");
+        //SimpleAudioPlayer.filePath = new File("src\\com\\sim.wav");
         b5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -382,7 +387,7 @@ public class AlarmClock {
                 fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 fc.showDialog(f, "Select");
                 if (fc.getSelectedFile() != null) {
-                    SimpleAudioPlayer.filePath= fc.getSelectedFile();
+                    Play.path=fc.getSelectedFile().getAbsolutePath();
                 }
 
             }
