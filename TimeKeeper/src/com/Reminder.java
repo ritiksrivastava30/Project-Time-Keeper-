@@ -57,7 +57,7 @@ public class Reminder extends Thread{
 //            System.out.println(date.equals(remDate));
             if (remTime.equals(time) && remDate.equals(date)) {
                 showRem();
-                SoundPlayer.vain();
+                SimpleAudioPlayer.vain();
                 break;
             }
         }
@@ -72,9 +72,11 @@ public class Reminder extends Thread{
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                SoundPlayer.stop();
+                SimpleAudioPlayer.clip.stop();
+                SimpleAudioPlayer.clip.close();
             }
         });
+        SimpleAudioPlayer.filePath = new File("src\\com\\sim.wav");
         JLabel lb=new JLabel();
         lb.setHorizontalAlignment(SwingConstants.CENTER);
         lb.setBounds(60,30,200,60);
@@ -95,7 +97,8 @@ public class Reminder extends Thread{
         stop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SoundPlayer.stop();
+                SimpleAudioPlayer.clip.stop();
+                SimpleAudioPlayer.clip.close();
                 frame.dispose();
             }
         });
@@ -107,7 +110,8 @@ public class Reminder extends Thread{
         snooze.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SoundPlayer.stop();
+                SimpleAudioPlayer.currentFrame = 0L;
+                SimpleAudioPlayer.clip.stop();
                 frame.dispose();
                 new Event().showDetails(index);
             }

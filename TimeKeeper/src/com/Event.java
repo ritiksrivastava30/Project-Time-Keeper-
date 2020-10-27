@@ -287,8 +287,7 @@ public class Event {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         frame3.dispose();
-                        if(frame!=null)//for condition when initial frame is not opened and reminder pop up window has appeared
-                            frame.setVisible(true);
+                        frame.setVisible(true);
                         eventNames.remove(index);
                         descriptionOfEvents.remove(index);
                         dateOfEvents.remove(2 * index);

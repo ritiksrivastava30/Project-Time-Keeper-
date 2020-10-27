@@ -12,7 +12,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class SoundPlayer {
     static Clip clip;
     AudioInputStream audioInputStream;
-    static String filePath="src\\com\\Tracks\\Track 1 (default).wav";
+    static String filePath="src\\com\\Track 1 (default).wav";
     static boolean status=false;
     // constructor to initialize streams and clip
     public SoundPlayer() throws UnsupportedAudioFileException,IOException, LineUnavailableException {
