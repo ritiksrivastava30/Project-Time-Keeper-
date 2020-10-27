@@ -409,17 +409,16 @@ public class Event {
     }
 
     private void addData(int index) {
-        //adding entered name to the eventNames ArrayList
+        //adding entered name to the eventNames List
         eventNames.add(index,nameEntry.getText());
-        //adding DATE to dateOfEvents ArrayList
+        //adding DATE to dateOfEvents List
         dateOfEvents.add(2*index,"on " + form.format(Integer.parseInt(spinner.getValue().toString())) + " " + spinner2.getValue().toString() + " " + spinner3.getValue().toString());
-        //adding TIME to dateOfEvents ArrayList
+        //adding TIME to dateOfEvents List
         dateOfEvents.add(2*index+1,"at " + form.format(Integer.parseInt(spinner4.getValue().toString())) + ":" + form.format(Integer.parseInt(spinner5.getValue().toString())));
-        //adding entered Description to descriptionOfEvents ArrayList
+        //adding entered Description to descriptionOfEvents List
         descriptionOfEvents.add(index,descriptionArea.getText());
         frame2.dispose();
         frame.setVisible(true);
-        //dataUpdate();
     }
 
     public static int getIndex() {

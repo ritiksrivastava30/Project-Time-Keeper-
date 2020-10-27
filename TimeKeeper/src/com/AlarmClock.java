@@ -9,28 +9,29 @@ import java.util.ArrayList;
 
 
 public class AlarmClock {
-    private JSpinner s1;
-    private JSpinner s2;
     private JTextField t1;
     private JTextField t2;
     private JButton b1;
     private JLabel l1;
     private JLabel l2;
+    private JLabel l3;
     private JPanel Content;
     private JButton b2;
     private JTextField t4;
-    private JLabel l3;
     private JButton b3;
+    private JButton b4;
     private JButton b5;
+    private JButton b6;
     private JFrame f,fr,fr2;
     private JPanel panel,panel2;
     private JButton addAlarm;
     private JList list;
     public static int index;
+    private int m,h;
     private JLabel[] day=new JLabel[8];
     private JButton[] off=new JButton[8];
     private JButton[] on=new JButton[8];
-    public int p1, p2,h;
+    public int p1, p2;
     public static DefaultListModel<String> ls=new DefaultListModel<>();
     DecimalFormat form = new DecimalFormat("00");
     public String[] days={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
@@ -268,58 +269,56 @@ public class AlarmClock {
         });
     }
     private void alarmDetails(){
+        m=0;
+        h=0;
         f = new JFrame();
         f.setTitle("Set Alarm");
         f.setSize(300, 400);
         Content = new JPanel();
         Content.setBounds(100, 100, 300, 400);
         Content.setBackground(new Color(204, 255, 204));
-        l1 = new JLabel("hr: ");
-        l1.setBounds(50, 90, 50, 30);
-        // s1=new JSpinner();
-        SpinnerModel value = new SpinnerNumberModel(0, 0, 23, 1);
-        s1 = new JSpinner(value);
-        s1.setBounds(50, 120, 50, 30);
-        t1 = new JTextField("");
-        t1.setBounds(50, 70, 50, 25);
+        l1 = new JLabel("Hour");
+        l1.setBounds(60, 70, 50, 30);
+        t1 = new JTextField(String.valueOf(h));
+        t1.setBounds(50, 130, 50, 30);
         t1.setEditable(false);
-        b1 = new JButton("Set hr");
-        b1.setBounds(35, 170, 80, 30);
-        l2 = new JLabel("min: ");
-        l2.setBounds(200, 90, 50, 30);
-        // s2=new JSpinner();
-        SpinnerModel va = new SpinnerNumberModel(0, 0, 59, 1);
-        s2 = new JSpinner(va);
-        s2.setBounds(200, 120, 50, 30);
-        t2 = new JTextField("");
-        t2.setBounds(200, 70, 50, 25);
+        b1 = new JButton("-");
+        b1.setBounds(50, 160, 50, 30);
+        b6 = new JButton("+");
+        b6.setBounds(50, 100, 50, 30);
+        l2 = new JLabel("Minute");
+        l2.setBounds(203, 70, 50, 30);
+        t2 = new JTextField(String.valueOf(m));
+        t2.setBounds(200, 130, 50, 30);
         t2.setEditable(false);
-        b2 = new JButton("Set min");
-        b2.setBounds(185, 170, 80, 30);
+        b2 = new JButton("-");
+        b2.setBounds(200, 160, 50, 30);
+        b4 = new JButton("+");
+        b4.setBounds(200, 100, 50, 30);
         b3 = new JButton("Set Alarm");
-        b3.setBounds(100, 215, 100, 30);
-        l3 = new JLabel("Alarm set at : ");
-        l3.setBounds(30, 20, 100, 30);
+        b3.setBounds(100, 240, 100, 30);
         t4 = new JTextField("");
-        t4.setBounds(110, 29, 80, 25);
-        t4.setEditable(false);
+        l3=new JLabel("ALARM");
+        l3.setBounds(95, 29, 120, 25);
+        l3.setFont(new Font("Serif", Font.PLAIN, 30));
         b5 = new JButton("Choose Audio");
         b5.setBounds(90, 300, 120, 30);
-
+        t1.setHorizontalAlignment(SwingConstants.CENTER);
+        t2.setHorizontalAlignment(SwingConstants.CENTER);
 
 
         Content.add(l1);
         Content.add(l2);
+        Content.add(l3);
         Content.add(t1);
         Content.add(t2);
-        Content.add(s1);
-        Content.add(s2);
         Content.add(b1);
         Content.add(b2);
-        Content.add(l3);
         Content.add(t4);
         Content.add(b3);
         Content.add(b5);
+        Content.add(b4);
+        Content.add(b6);
         f.setContentPane(Content);
         f.setLayout(null);
         f.setVisible(true);
@@ -328,13 +327,37 @@ public class AlarmClock {
         b1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                t1.setText(s1.getValue().toString());
+                h=h-1;
+                if(h<0)
+                    h=23;
+                t1.setText(String.valueOf(h));
+
             }
         });
         b2.addActionListener(new ActionListener() {
             @Override
+            public void actionPerformed(ActionEvent e) {m=m-1;
+                if(m<0)
+                    m=59;
+                t2.setText(String.valueOf(m));
+            }
+        });
+        b4.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                t2.setText(s2.getValue().toString());
+                m=m+1;
+                if(m>59)
+                    m=0;
+                t2.setText(String.valueOf(m));
+            }
+        });
+        b6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                h=h+1;
+                if(h>23)
+                    h=0;
+                t1.setText(String.valueOf(h));
             }
         });
         b3.addActionListener(new ActionListener() {
@@ -343,10 +366,10 @@ public class AlarmClock {
                 flags.add("1111111");
                 ls.addElement("  "+form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText()))+"                Status: ON");
                 t4.setText(form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText())));
-                p1 = (int) s1.getValue();
-                p2 = (int) s2.getValue();
+                p1 = Integer.parseInt(t1.getText());
+                p2 = Integer.parseInt(t2.getText());
                 Play.setAlarm(p1,p2);
-                //dataUpdate();
+                f.dispose();
             }
 
         });
