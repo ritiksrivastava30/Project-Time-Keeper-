@@ -186,7 +186,7 @@ public class firstPage extends JFrame implements Runnable{
         contentPane.add(b2);
         b3=new JButton("TIMER");
         b3.setBounds(50,200,180,30);
-        b3.setBackground(Color.BLUE);
+        b3.setBackground(Color.orange);
         b3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

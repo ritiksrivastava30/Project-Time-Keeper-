@@ -44,13 +44,13 @@ public class AlarmClock {
 
     private void createUIComponents() {
         fr = new JFrame();
-        fr.setSize(500, 500);
         panel = new JPanel();
+        fr.setSize(500, 500);
         panel.setLayout(null);
-        JScrollPane sp=new JScrollPane(panel);
-        panel.setPreferredSize(new Dimension(250,2000));
-        fr.getContentPane().add(sp);
-        fr.add(panel);
+        JScrollPane jsp = new JScrollPane(panel);
+        panel.setPreferredSize(new Dimension(250, 3500));
+        panel.setLayout(null);
+        fr.getContentPane().add(jsp);
 
         JLabel info = new JLabel("ALARMS");
         info.setBounds(200, 15, 300, 50);

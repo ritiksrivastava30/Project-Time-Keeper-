@@ -21,7 +21,7 @@ public class Play extends Thread {
     int a, b;
     public static int i=0;
     public static ArrayList<Play> pl=new ArrayList<>();
-    private String path;//="src\\com\\sim.wav";
+    private String path;
 
     public Play(int h, int m,String lP) {
         this.a = h;
