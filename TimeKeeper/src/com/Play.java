@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -20,21 +21,22 @@ public class Play extends Thread {
     int a, b;
     public static int i=0;
     public static ArrayList<Play> pl=new ArrayList<>();
-    public static String path;//="src\\com\\sim.wav";
+    private String path;//="src\\com\\sim.wav";
 
-    public Play(int h, int m) {
+    public Play(int h, int m,String lP) {
         this.a = h;
         this.b = m;
+        this.path= lP;
     }
 
-    public static void setAlarm(int hour,int minute){
-        pl.add(new Play(hour,minute));
+    public static void setAlarm(int hour,int minute,String lP){
+        pl.add(new Play(hour,minute,lP));
         pl.get(i).start();
         i++;
     }
     public void run() {
-        String path1=path;
-        System.out.println(path1);
+        //String path1=path;
+        //System.out.println(path1);
         while (true) {
             int a1=a;
             int b1=b;
@@ -45,8 +47,11 @@ public class Play extends Thread {
             DateTimeFormatter format1 = DateTimeFormatter.ofPattern("mm");
             String formatDateTime1 = now1.format(format1);
             int mins = Integer.parseInt(formatDateTime1);
-            if (a1 == hours && b1 == mins && dayCheck()==1) {
-                SimpleAudioPlayer.setFilePath(path1);
+            DateTimeFormatter format3 = DateTimeFormatter.ofPattern("ss");
+            String formatDateTime3 = now1.format(format3);
+            int sec = Integer.parseInt(formatDateTime3);
+            if (a1 == hours && b1 == mins && sec == 0 && dayCheck()==1) {
+                SimpleAudioPlayer.setFilePath(this.path);
                 SimpleAudioPlayer.vain();
                 alarmTime();
                 break;
@@ -128,6 +133,27 @@ public class Play extends Thread {
 
         frame.setVisible(true);
 
+    }
+    public String pathGetter(){
+        return this.path;
+    }
+    public static void dataUpdate(){
+        //creating file output stream
+        String st,st2,st3;
+        int i;
+        try {
+            FileWriter fileWriter = new FileWriter("./alarms.txt", false);
+            for (i = 0; i < AlarmClock.ls.size(); i++) {
+                st = AlarmClock.ls.get(i);
+                st2=AlarmClock.flags.get(i);
+                st3= Play.pl.get(i).pathGetter();
+                fileWriter.write(st2 + st + st3+"\n");
+            }
+            fileWriter.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 

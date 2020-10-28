@@ -1,12 +1,13 @@
 package com;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
+import java.util.Scanner;
 
 public class AlarmClock {
     private JTextField t1;
@@ -14,7 +15,7 @@ public class AlarmClock {
     private JButton b1;
     private JLabel l1;
     private JLabel l2;
-    private JLabel l3;
+    private JLabel l3,l4;
     private JPanel Content;
     private JButton b2;
     private JTextField t4;
@@ -32,6 +33,7 @@ public class AlarmClock {
     private JButton[] off=new JButton[8];
     private JButton[] on=new JButton[8];
     public int p1, p2;
+    private String localPath;
     public static DefaultListModel<String> ls=new DefaultListModel<>();
     DecimalFormat form = new DecimalFormat("00");
     public String[] days={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
@@ -253,15 +255,13 @@ public class AlarmClock {
                 fr2.setVisible(true);
                 list.clearSelection();
             }
-
-
         });
 
 
         addAlarm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Play.path="src\\com\\sim.wav";
+               // Play.path="src\\com\\sim.wav";
                 alarmDetails();
             }
         });
@@ -269,7 +269,7 @@ public class AlarmClock {
         fr.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                dataUpdate();
+                Play.dataUpdate();
             }
         });
     }
@@ -306,15 +306,16 @@ public class AlarmClock {
         l3=new JLabel("ALARM");
         l3.setBounds(95, 29, 120, 25);
         l3.setFont(new Font("Serif", Font.PLAIN, 30));
+        l4= new JLabel();
+        l4.setBounds(79,202,180,25);
         b5 = new JButton("Choose Audio");
         b5.setBounds(90, 300, 120, 30);
         t1.setHorizontalAlignment(SwingConstants.CENTER);
         t2.setHorizontalAlignment(SwingConstants.CENTER);
-
-
         Content.add(l1);
         Content.add(l2);
         Content.add(l3);
+        Content.add(l4);
         Content.add(t1);
         Content.add(t2);
         Content.add(b1);
@@ -365,6 +366,8 @@ public class AlarmClock {
                 t1.setText(String.valueOf(h));
             }
         });
+        localPath= "src\\com\\sim.wav";
+        songFilename(localPath);
         b3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -373,7 +376,7 @@ public class AlarmClock {
                 t4.setText(form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText())));
                 p1 = Integer.parseInt(t1.getText());
                 p2 = Integer.parseInt(t2.getText());
-                Play.setAlarm(p1,p2);
+                Play.setAlarm(p1,p2,localPath);
                 f.dispose();
             }
 
@@ -385,32 +388,25 @@ public class AlarmClock {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = new JFileChooser();
                 fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                fc.addChoosableFileFilter(new FileNameExtensionFilter(".wav Audio files", "wav"));
+                fc.setAcceptAllFileFilterUsed(true);
                 fc.showDialog(f, "Select");
                 if (fc.getSelectedFile() != null) {
-                    Play.path=fc.getSelectedFile().getAbsolutePath();
+                    localPath =fc.getSelectedFile().getAbsolutePath();
+                    songFilename(localPath);
+                    //b5.setToolTipText(localPath);
                 }
-
             }
 
         });
+    }
+    private void songFilename(String locPath){
+        String p= null;
+        Scanner sc= new Scanner(locPath);
+        sc.useDelimiter("\\\\");
+        while(sc.hasNext())
+             p = sc.next();
+        l4.setText("Current Audio: "+ p);
 
     }
-    private void dataUpdate(){
-        //creating file output stream
-        String st,st2;
-        int i;
-        try {
-            FileWriter fileWriter = new FileWriter("./alarms.txt", false);
-            for (i = 0; i < ls.size(); i++) {
-                st = ls.get(i);
-                st2=flags.get(i);
-                fileWriter.write(st2 + st + "\n");
-            }
-            fileWriter.close();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
 }

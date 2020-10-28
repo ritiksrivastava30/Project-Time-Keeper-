@@ -84,8 +84,9 @@ public class firstPage extends JFrame implements Runnable{
                 while (sc.hasNextLine()) {
                     temp = sc.nextLine();
                     AlarmClock.flags.add(temp.substring(0,7));
-                    AlarmClock.ls.addElement(temp.substring(7));
-                    Play.setAlarm(Integer.parseInt(temp.substring(9,11)),Integer.parseInt(temp.substring(12,14)));
+                    AlarmClock.ls.addElement(temp.substring(7,40));
+                    Play.setAlarm(Integer.parseInt(temp.substring(9,11)),Integer.parseInt(temp.substring(12,14)),
+                            temp.substring(40));
                 }
                 sc.close();
             } catch (Exception ex) {
