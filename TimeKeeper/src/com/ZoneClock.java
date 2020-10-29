@@ -13,161 +13,186 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.*;
 import java.util.*;
-
 import static java.lang.Thread.sleep;
 
 
 public class ZoneClock implements Runnable{
     private JPanel contPane;
-    private JList list1;
-    private JTextField tf1;
-    private JTextField tf2;
-    private JTextField tf3;
-    private JButton bt1;
-    private JTextArea ta1;
-    private JButton bt2;
-    private JButton bt3;
-    public static ArrayList<ZoneId> list=new ArrayList<>();
+    private JTextField selectedZoneTab;
+    private JTextField dateTimeSelectedZoneTab;
+    private JButton setButton;
+    private JButton addButton;
+    private JButton removeButton;
+    private JTextArea addedClockArea;
+    public static ArrayList<ZoneId> selectedZoneList =new ArrayList<>();
+    private DefaultListModel<String> localZoneList;
+    private JList<String> zoneListUI;
 
     public ZoneClock(){
         JFrame f= new JFrame();
-        //super("ZoneClock");
         f.setTitle("ZoneClock");
         f.setSize(500, 500);
+
         f.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 updateData();
             }
         });
+
         contPane= new JPanel();
         contPane.setBounds(100,100,500,500);
         contPane.setBackground(new Color(204, 255, 204));
-        final DefaultListModel<String> l1 = new DefaultListModel<>();
-        l1.addElement("Asia/Karachi");
-        l1.addElement("Europe/Paris");
-        l1.addElement("Africa/Harare");
-        l1.addElement("Australia/Darwin");
-        l1.addElement("Pacific/Apia");
-        l1.addElement("Pacific/Guadalcanal");
-        l1.addElement("Asia/Ho_Chi_Minh");
-        l1.addElement("America/Puerto_Rico");
-        l1.addElement("America/Los_Angeles");
-        l1.addElement("Pacific/Auckland");
-        l1.addElement("Asia/Tokyo");
-        l1.addElement("Asia/Kolkata");
-        l1.addElement("Asia/Shanghai");
-        l1.addElement("Africa/Cairo");
-        JList<String> list1 = new JList<>(l1);
-        list1.setBounds(0,2, 140,500);
-        contPane.add(list1);
-        tf1=new JTextField("Selected ZoneId");
-        tf1.setBounds(150, 29, 200, 20);
-        tf1.setEditable(false);
-        tf2=new JTextField("Date And Time");
-        tf2.setBounds(150, 89, 240, 20);
-        tf2.setEditable(false);
-        tf3=new JTextField("To Set This Time As App Time,Press: SET Button ");
-        tf3.setBounds(150, 139, 280, 20);
-        tf3.setEditable(false);
-        contPane.add(tf1);
-        contPane.add(tf2);
-        contPane.add(tf3);
-        bt1= new JButton("Set");
-        bt1.setBounds(400,320,80,30);
-        list1.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                ZoneId zoneId1 = ZoneId.of(list1.getSelectedValue());
-                LocalDateTime now1 = LocalDateTime.now(zoneId1);
-                DateTimeFormatter format1 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                String formatDateTime1 = now1.format(format1);
-                DateTimeFormatter format2 = DateTimeFormatter.ofPattern("HH:mm:ss");
-                String formatDateTime2 = now1.format(format2);
-                tf1.setText(list1.getSelectedValue());
-                tf2.setText(formatDateTime1 +"  "+ formatDateTime2);
-            }
-        });
-        bt1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(list1.getSelectedIndex()!= -1) {
-                    firstPage.zone = ZoneId.of(list1.getSelectedValue());
-                    tf1.setText("Selected ZoneId");
-                    tf2.setText("Date And Time");
-                }
-            }
-        });
-        contPane.add(bt1);
-        ta1= new JTextArea();
-        bt2= new JButton("Add");
-        bt2.setBounds(400, 360, 80, 30);
-        contPane.add(bt2);
-        bt2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(list1.getSelectedIndex()!= -1 && !tf1.getText().equals("Selected ZoneId")) {
-                    //ZoneId zoneId1 = ZoneId.of(list1.getSelectedValue());
-                    list.add(ZoneId.of(list1.getSelectedValue()));
-                    tf1.setText("Selected ZoneId");
-                    tf2.setText("Date And Time");
-                }
-            }
-        });
-        bt3= new JButton("Remove");
-        bt3.setBounds(400, 400, 80, 30);
-        bt3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(list.size()!=0){
-                    list.remove(list.size()-1);
-                }
-            }
-        });
-        contPane.add(bt3);
         f.setContentPane(contPane);
+
+        this.implementingJList();
+
+        selectedZoneTab =new JTextField("Selected ZoneId");
+        selectedZoneTab.setBounds(150, 29, 200, 20);
+        selectedZoneTab.setEditable(false);
+        contPane.add(selectedZoneTab);
+
+        dateTimeSelectedZoneTab =new JTextField("Date And Time");
+        dateTimeSelectedZoneTab.setBounds(150, 89, 240, 20);
+        dateTimeSelectedZoneTab.setEditable(false);
+        contPane.add(dateTimeSelectedZoneTab);
+
+        //adding set button
+        setButton = new JButton("Set");
+        setButton.setBounds(400,320,80,30);
+        setButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(zoneListUI.getSelectedIndex()!= -1) {
+                    firstPage.zone = ZoneId.of(zoneListUI.getSelectedValue());
+                    selectedZoneTab.setText("Selected ZoneId");
+                    dateTimeSelectedZoneTab.setText("Date And Time");
+                }
+            }
+        });
+        contPane.add(setButton);
+
+        //adding add button
+        addedClockArea= new JTextArea();
+        addButton = new JButton("Add");
+        addButton.setBounds(400, 360, 80, 30);
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(zoneListUI.getSelectedIndex()!= -1 && !selectedZoneTab.getText().equals("Selected ZoneId")) {
+                    selectedZoneList.add(ZoneId.of(zoneListUI.getSelectedValue()));
+                    selectedZoneTab.setText("Selected ZoneId");
+                    dateTimeSelectedZoneTab.setText("Date And Time");
+                }
+            }
+        });
+        contPane.add(addButton);
+
+        //adding remove button
+        removeButton = new JButton("Remove");
+        removeButton.setBounds(400, 400, 80, 30);
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(selectedZoneList.size()!=0){
+                    selectedZoneList.remove(selectedZoneList.size()-1);
+                }
+            }
+        });
+        contPane.add(removeButton);
+
         f.setLayout(null);
         f.setVisible(true);
     }
 
+    private void implementingJList(){
+        DefaultListModel<String> localZoneList = new DefaultListModel<>();
+        //adding all available zone in localZoneList
+        localZoneList.addElement("Asia/Karachi");
+        localZoneList.addElement("Europe/Paris");
+        localZoneList.addElement("Africa/Harare");
+        localZoneList.addElement("Australia/Darwin");
+        localZoneList.addElement("Pacific/Apia");
+        localZoneList.addElement("Pacific/Guadalcanal");
+        localZoneList.addElement("Asia/Ho_Chi_Minh");
+        localZoneList.addElement("America/Puerto_Rico");
+        localZoneList.addElement("America/Los_Angeles");
+        localZoneList.addElement("Pacific/Auckland");
+        localZoneList.addElement("Asia/Tokyo");
+        localZoneList.addElement("Asia/Kolkata");
+        localZoneList.addElement("Asia/Shanghai");
+        localZoneList.addElement("Africa/Cairo");
+        //instantiating JList,setting its bounds
+        zoneListUI = new JList<>(localZoneList);
+        zoneListUI.setBounds(0,2, 140,500);
+        //its action listener
+        zoneListUI.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                //getting zoneId of selected zone
+                ZoneId localSelectedZoneID = ZoneId.of(zoneListUI.getSelectedValue());
+                //getting Date and time of selected zone
+                LocalDateTime localSelectedZoneDate = LocalDateTime.now(localSelectedZoneID);
+                //converting it in dd-mm-yyyy format
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                String inDateFormat = localSelectedZoneDate.format(dateFormat);
+                //converting it in hh:mm:ss format
+                DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+                String inTimeFormat = localSelectedZoneDate.format(timeFormat);
+                //setting selected zone and its time and date in textField
+                selectedZoneTab.setText(zoneListUI.getSelectedValue());
+                dateTimeSelectedZoneTab.setText(inDateFormat +"  "+ inTimeFormat);
+            }
+        });
+        contPane.add(zoneListUI);
+    }
+
+    //thread function
     @Override
     public void run() {
-        JScrollPane scrollableTextArea = new JScrollPane(ta1);
-        scrollableTextArea.setBounds(145, 170, 250, 260);
-        contPane.add(scrollableTextArea);
+        JScrollPane scrollableAddedClockTextArea = new JScrollPane(addedClockArea);
+        scrollableAddedClockTextArea.setBounds(145, 170, 250, 260);
+        contPane.add(scrollableAddedClockTextArea);
+
         while(true) {
-            ta1.setText("Total added clock: " + list.size()+ "\n");
-            if (list.size()!= 0) {
-                //ta1.setText("Kamal");
-                String s= "";
-                for(int i = 0; i < list.size(); i++) {
-                    LocalDateTime now1 = LocalDateTime.now(list.get(i));
-                    DateTimeFormatter format2 = DateTimeFormatter.ofPattern("HH:mm:ss");
-                    String formatDateTime2 = now1.format(format2);
-                    s = s +"Clock:"+(i+1)+"   "+ list.get(i)+"  "+ formatDateTime2 + "\n";
+            addedClockArea.setText("Total added clock: " + selectedZoneList.size()+ "\n");
+
+            if (selectedZoneList.size()!= 0) {
+                String addedClockLocalString= "";
+
+                for(int i = 0; i < selectedZoneList.size(); i++) {
+                    LocalDateTime localSelectedZoneClock = LocalDateTime.now(selectedZoneList.get(i));
+                    DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+                    String inTimeFormat = localSelectedZoneClock.format(timeFormat);
+                    addedClockLocalString = addedClockLocalString +"Clock:"+(i+1)+"   "+ selectedZoneList.get(i)+"  "+ inTimeFormat + "\n";
                 }
-                ta1.append(s);
+                addedClockArea.append(addedClockLocalString);
+
                 try {
                     sleep(1000);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
 
+    //for Writing data in Zonedata file
     private void updateData(){
-        ZoneId st;
-        int i;
+        ZoneId local;
+        int counter;
         try {
             FileWriter fileWriter = new FileWriter("./Zonedata.txt", false);
-            for (i = 0; i < list.size(); i++) {
-                st = list.get(i);
-                fileWriter.write(st + "\n");
+
+            for (counter = 0; counter < selectedZoneList.size(); counter++) {
+                local = selectedZoneList.get(counter);
+                fileWriter.write(local + "\n");
             }
+
             fileWriter.write("$\n");
-            st= firstPage.zone;
-            fileWriter.write(st + "\n");
+            local= firstPage.zone;
+            fileWriter.write(local + "\n");
             fileWriter.close();
         }
         catch (Exception ex) {

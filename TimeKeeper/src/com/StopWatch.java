@@ -4,58 +4,82 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 
 public class StopWatch extends Thread{
     private JPanel pane;
-    private JButton b1, b2, b3;
-    private JTextArea ta1;
+    private JButton start, reset, lap;
+    private JTextArea lapScreen;
     private JLabel counter;
     private DecimalFormat form;
     private int hours = 0, minutes = 0, seconds = 0, milliseconds = 0;
+
+    //constructor
     public StopWatch() {
         CreateUIComponent();
     }
 
+    //method for creating stopwatchUI and implementing stopwatch functionality
     private void CreateUIComponent() {
+        //main stopwatch frame
         JFrame f = new JFrame("STOPWATCH");
         f.setSize(400, 500);
+
+        f.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                firstPage.flag= 0;
+            }
+        });
+
         pane = new JPanel();
         pane.setBounds(100, 100, 500, 500);
         pane.setBackground(new Color(204, 255, 204));
+        f.setContentPane(pane);
+
+        //for stopwatch time look like "00: 00: 00: 00"
+        //otherwise time will be of form 0: 0: 0
+        //and setting stopwatch time as counter label
         form = new DecimalFormat("00");
         counter = new JLabel();
         counter.setBounds(60, 30, 300, 65);
         counter.setFont(new Font("Serif", Font.CENTER_BASELINE, 50));
         counter.setText(form.format(hours) + ":" + form.format(minutes) + ":" + form.format(seconds) + ":" + form.format(milliseconds));
         pane.add(counter);
-        b1 = new JButton("Start");
-        b1.setBounds(142, 140, 86, 30);
-        b1.addActionListener(new ActionListener() {
+
+        //this "start" button is for three functionalities i.e. start,stop,resume
+        start = new JButton("Start");
+        start.setBounds(142, 140, 86, 30);
+        start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(b1.getLabel().equals("Start"))
+                if(start.getLabel().equals("Start"))
                 {
-                    b2.setEnabled(true);
-                    b3.setEnabled(true);
+                    reset.setEnabled(true);
+                    lap.setEnabled(true);
                 }
-                if(b1.getLabel().equals("Start") || b1.getLabel().equals("Resume"))
+                if(start.getLabel().equals("Start") || start.getLabel().equals("Resume"))
                 {
                     resume();
-                    b1.setLabel("Pause");
+                    start.setLabel("Pause");
                 }
-                else if(b1.getLabel().equals("Pause"))
+                else if(start.getLabel().equals("Pause"))
                 {
                     suspend();
-                    b1.setLabel("Resume");
+                    start.setLabel("Resume");
                 }
             }
         });
-        pane.add(b1);
-        b2 = new JButton("Reset");
-        b2.setBounds(260, 115, 70, 30);
-        b2.setEnabled(false);
-        b2.addActionListener(new ActionListener() {
+        pane.add(start);
+
+        //this button reset everything
+        //mainly it just create new object of stopwatch
+        reset = new JButton("Reset");
+        reset.setBounds(260, 115, 70, 30);
+        reset.setEnabled(false);
+        reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 f.setVisible(false);
@@ -63,32 +87,38 @@ public class StopWatch extends Thread{
                 sw.start();
             }
         });
-        pane.add(b2);
-        b3 = new JButton("Lap");
-        b3.setBounds(40, 115, 70, 30);
-        b3.setEnabled(false);
-        b3.addActionListener(new ActionListener() {
+        pane.add(reset);
+
+        //button notes instance of stopwatch time in lapScreen
+        lap = new JButton("Lap");
+        lap.setBounds(40, 115, 70, 30);
+        lap.setEnabled(false);
+        lap.addActionListener(new ActionListener() {
             int c= 1;
             @Override
             public void actionPerformed(ActionEvent e) {
-                ta1.append("# LAP "+c+ ")   "+hours+ ": "+ minutes+ ": "+ seconds+ ": "+ milliseconds+ "\n");
+                lapScreen.append("# LAP "+c+ ")   "+hours+ ": "+ minutes+ ": "+ seconds+ ": "+ milliseconds+ "\n");
                 c= c+1;
             }
         });
-        pane.add(b3);
-        ta1= new JTextArea();
-        //ta1.setBounds(40, 200, 300, 200);
-        JScrollPane scrollableTextArea = new JScrollPane(ta1);
+        pane.add(lap);
+
+        //lapScreen for added laps
+        lapScreen = new JTextArea();
+        JScrollPane scrollableTextArea = new JScrollPane(lapScreen);
         scrollableTextArea.setBounds(40, 200, 300, 200);
         pane.add(scrollableTextArea);
-        f.setContentPane(pane);
+
         f.setLayout(null);
         f.setVisible(true);
     }
+
+    //thread function
     public void run() {
         suspend();
         while (true) {
             counter.setText(form.format(hours) + ":" + form.format(minutes) + ":" + form.format(seconds) + ":" + form.format(milliseconds));
+            // logic for stopWatch time
             milliseconds++;
             if (milliseconds == 60) {
                 milliseconds = 0;
