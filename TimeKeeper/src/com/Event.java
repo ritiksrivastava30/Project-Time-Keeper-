@@ -13,7 +13,6 @@ Flow of Program:
 -frame3 : shows the details of selected event
 
  */
-
 package com;
 
 import javax.swing.*;
@@ -29,7 +28,7 @@ import java.util.Arrays;
 public class Event {
     JFrame frame, frame2, frame3;
     JPanel panel, panel2, panel3;
-    JButton addEvent, addingEvent, deleteEvent, back31, back10, back21, editEvent;//back31 represents back button to go back from frame 3 to frame 1
+    JButton addEvent, addingEvent, addingEvent2, deleteEvent, back31, back10, back21, editEvent;//back31 represents back button to go back from frame 3 to frame 1
     static JList listOfName, listOfSchedule;
     JTextArea descriptionArea, enteredDescription;
     JLabel nameOfEvent, dateLabel, time, description, showDescription, showTime, showDate, showName;
@@ -206,22 +205,29 @@ public class Event {
                         spinner3.setValue(year);
                         spinner4.setValue(hour);
                         spinner5.setValue(minute);
-                        eventNames.remove(index);
-                        descriptionOfEvents.remove(index);
-                        dateOfEvents.remove(2 * index);
-                        dateOfEvents.remove(2 * index);
-                        newEventAdditionIndex = index;
                         back21.setText("Discard");
-                        addingEvent.setText("Save");
+                        addingEvent.setVisible(false);
+
+                        addingEvent2 = new JButton("Save");
+                        addingEvent2.setBounds(200, 350, 80, 35);
+                        panel2.add(addingEvent2);
+                        //on click of this button, the entered data will be taken from the input fields and new event will be created
+                        addingEvent2.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                eventNames.remove(index);
+                                descriptionOfEvents.remove(index);
+                                dateOfEvents.remove(2 * index);
+                                dateOfEvents.remove(2 * index);
+                                newEventAdditionIndex = index;
+                                addData(newEventAdditionIndex);
+                            }
+                        });
                     }
                 });
 
                 msg = new JLabel();
                 msg.setBounds(140, 340, 250, 35);
-//                if (flag == 1)
-//                    msg.setVisible(true);
-//                else
-//                    msg.setVisible(false);
                 panel3.add(msg);
 
                 remind = new JButton("Set Reminder");
@@ -282,8 +288,6 @@ public class Event {
                 deleteEvent.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        frame3.dispose();
-                        frame.setVisible(true);
                         eventNames.remove(index);
                         descriptionOfEvents.remove(index);
                         dateOfEvents.remove(2 * index);
@@ -292,6 +296,8 @@ public class Event {
                             Reminder.deleteReminder(index);
                             Reminder.remObj[index].stop();
                         }
+                        frame3.dispose();
+                        frame.setVisible(true);
                         //dataUpdate();
                     }
                 });
