@@ -160,13 +160,13 @@ public class firstPage extends JFrame implements Runnable{
     }
 
     private void createUIComponents() {
-        setTitle("What Time It Is?");
+        setTitle("Time Keeper");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(300, 450);
         //instantiating JPanel,setting its bounds and its background color
         contentPane= new JPanel();
         contentPane.setBounds(100,100,300,400);
-        contentPane.setBackground(new Color(204, 255, 204));
+        contentPane.setBackground(new Color(150, 220, 250));
         setContentPane(contentPane);
 
         //instantiating JLabel and setting its bounds
@@ -237,7 +237,7 @@ public class firstPage extends JFrame implements Runnable{
         //instantiating JButton and setting its bounds,its background color
         timer =new JButton("TIMER");
         timer.setBounds(50,200,180,30);
-        timer.setBackground(Color.BLUE);
+        timer.setBackground(Color.ORANGE);
         //its actionListener
         timer.addActionListener(new ActionListener() {
             @Override

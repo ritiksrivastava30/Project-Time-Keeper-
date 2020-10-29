@@ -40,7 +40,7 @@ public class Event {
     static DefaultListModel<String> eventNames = new DefaultListModel<>(); //an Array List to store name of Events
     static DefaultListModel<String> dateOfEvents = new DefaultListModel<>(); //an Array List to store date and time of any Event
     static DefaultListModel<String> descriptionOfEvents = new DefaultListModel<>(); //an Array List to store Description of Events as entered by the user
-    int newEventAdditionIndex;
+    int newEventAdditionIndex,flag;
     private static int index;
     private int date,year,hour,minute;
     private String monthName;
@@ -169,7 +169,8 @@ public class Event {
                 jsp.setBounds(160, 230, 225, 100);
                 panel3.add(jsp);
 
-                int flag = 0,h;
+                flag = 0;
+                int h;
                 for (h = 0; h < Reminder.reminders.size(); h++) {
                     if (Integer.parseInt(Reminder.reminders.get(h).substring(15)) == index) {
                         flag = 1;
@@ -239,12 +240,6 @@ public class Event {
                     public void actionPerformed(ActionEvent e) {
                         int month = months.indexOf(monthName) + 1;
                         new ReminderUI(hour,minute,date,month,year);
-//                        String remDate = form.format(date) + "-" + form.format(month) + "-" + form.format(year);
-//                        String remTime = form.format(hour) + ":" + form.format(minute);
-//                        Reminder.setReminder(remTime, remDate, index);
-//                        msg.setVisible(true);
-//                        remind.setVisible(false);
-//                        cancelRemind.setVisible(true);
                     }
                 });
 
@@ -258,11 +253,12 @@ public class Event {
                 cancelRemind.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        Reminder.remObj[index].stop();
-                        Reminder.deleteReminder(index);
+                        if(flag==1) {
+                            Reminder.remObj[index].stop();
+                            Reminder.deleteReminder(index);
+                        }
                         cancelRemind.setVisible(false);
                         remind.setVisible(true);
-//                        msg.setVisible(false);
                         msg.setText("");
                     }
                 });
@@ -274,8 +270,8 @@ public class Event {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         frame3.dispose();
+                        if(frame!=null)
                         frame.setVisible(true);
-
                     }
                 });
 
@@ -292,8 +288,10 @@ public class Event {
                         descriptionOfEvents.remove(index);
                         dateOfEvents.remove(2 * index);
                         dateOfEvents.remove(2 * index);
-                        Reminder.remObj[index].stop();
-                        Reminder.deleteReminder(index);
+                        if(flag==1) {
+                            Reminder.deleteReminder(index);
+                            Reminder.remObj[index].stop();
+                        }
                         //dataUpdate();
                     }
                 });

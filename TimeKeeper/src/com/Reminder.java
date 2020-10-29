@@ -17,14 +17,14 @@ import java.util.Arrays;
 
 
 public class Reminder extends Thread{
-    int index;
+    private int index;
     public static Reminder[] remObj=new Reminder[100];
     private JFrame frame;
     private JPanel panel;
     DecimalFormat form = new DecimalFormat("00");
     public static ZoneId zone = ZoneId.systemDefault();
     private String remDate,remTime;
-    static ArrayList<String> reminders = new ArrayList<String>();
+    public static ArrayList<String> reminders = new ArrayList<String>();
 
     public Reminder(String remTime, String remDate, int index){
         this.remDate=remDate;
@@ -49,13 +49,11 @@ public class Reminder extends Thread{
             DateTimeFormatter format2 = DateTimeFormatter.ofPattern("HH:mm");
             String time = now1.format(format2);
 
-//            System.out.println(remDate);
-//            System.out.println(remTime);
-//            System.out.println(date);
-//            System.out.println(time);
-//            System.out.println(time.equals(remTime));
-//            System.out.println(date.equals(remDate));
-            if (remTime.equals(time) && remDate.equals(date)) {
+            DateTimeFormatter format3 = DateTimeFormatter.ofPattern("ss");
+            String formatDateTime3 = now1.format(format3);
+            int sec = Integer.parseInt(formatDateTime3);
+
+            if (remTime.equals(time) && remDate.equals(date) && sec==0) {
                 showRem();
                 SoundPlayer.vain();
                 break;
@@ -64,7 +62,7 @@ public class Reminder extends Thread{
     }
     private void showRem(){
         frame=new JFrame();
-        frame.setSize(350,280);
+        frame.setSize(400,300);
         frame.setTitle("Event Reminder");
         panel=new JPanel();
         panel.setLayout(null);
@@ -76,8 +74,8 @@ public class Reminder extends Thread{
             }
         });
         JLabel lb=new JLabel();
+        lb.setBounds(60,30,350,60);
         lb.setHorizontalAlignment(SwingConstants.CENTER);
-        lb.setBounds(60,30,200,60);
         lb.setText(Event.eventNames.get(Event.getIndex()));
         lb.setFont(new Font("Serif", Font.BOLD, 45));
         panel.add(lb);
