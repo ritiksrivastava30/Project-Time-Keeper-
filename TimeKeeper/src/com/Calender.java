@@ -1,33 +1,47 @@
 package com;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.*;
 import java.time.temporal.ChronoField;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import static java.awt.Component.LEFT_ALIGNMENT;
+
 public class Calender {
-    //JSpinner sp1, sp2;
-    JTextField monthField, yearField;
-    JTextArea calenderArea;
-    JButton show, monthUP, yearUP, monthDOWN, yearDOWN;
-    JPanel conPane;
-    JLabel monthLabel, yearLabel, monthNAME;
+    private JTextField monthField, yearField;
+    private JTextArea calenderArea;
+    private JButton show, monthUP, yearUP, monthDOWN, yearDOWN, refresh;
+    private JPanel conPane;
+    private JLabel monthLabel, yearLabel, monthNAME, eventInfo;
+    private DefaultListModel<String> dflm;
+    private ArrayList<String> ind;
+    private int count= 0,calMonInfo,calYrInfo;
+    private JList list;
+    private JScrollPane Jsp;
 
     public Calender()
     {
         createUIComponent();
-
     }
 
     public void createUIComponent(){
         JFrame j= new JFrame();
         j.setTitle("Calender");
-        j.setSize(400, 350);
+        j.setSize(400, 500);
 
         conPane= new JPanel();
+        conPane.setBounds(0,0,400,900);
         conPane.setBackground(new Color(204, 255, 204));
-        j.setContentPane(conPane);
+        conPane.setLayout(null);
+        j.add(conPane);
 
         monthLabel =new JLabel("MONTH");
         monthLabel.setBounds(60,20, 60,30);
@@ -40,6 +54,7 @@ public class Calender {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter format1 = DateTimeFormatter.ofPattern("MM");
         String formatDateTime1 = now.format(format1);
+        calMonInfo= Integer.parseInt(formatDateTime1);
 
         monthUP = new JButton("+");
         monthUP.setBounds(155,20, 45,13);
@@ -76,6 +91,7 @@ public class Calender {
 
         DateTimeFormatter format2 = DateTimeFormatter.ofPattern("yyyy");
         String formatDateTime2 = now.format(format2);
+        calYrInfo= Integer.parseInt(formatDateTime2);
 
         yearUP = new JButton("+");
         yearUP.setBounds(155,52, 45,13);
@@ -111,6 +127,9 @@ public class Calender {
         show.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                calMonInfo= Integer.parseInt(monthField.getText());
+                calYrInfo= Integer.parseInt(yearField.getText());
+                filterEventByDate();
                 calenderPrinter();
             }
         });
@@ -125,14 +144,32 @@ public class Calender {
         monthNAME.setBounds(150,85, 100,40);
         conPane.add(monthNAME);
 
+        eventInfo= new JLabel("< EVENT OF THIS MONTH >");
+        eventInfo.setBounds(100, 297, 150,30);
+        conPane.add(eventInfo);
+
+        refresh= new JButton("Refresh");
+        refresh.setBounds(27,360, 90,25);
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filterEventByDate();
+            }
+        });
+        conPane.add(refresh);
+
+        Jsp= new JScrollPane();
+        Jsp.setBounds(140,330,210,100);
+        filterEventByDate();
+        conPane.add(Jsp);
         calenderPrinter();
 
         j.setLayout(null);
         j.setVisible(true);
     }
 
-    //*******method for calender of each month**********//
-    void calenderPrinter(){
+    //******* Method for calender of each month **********//
+    private void calenderPrinter(){
         int days[]= new int[]{1,2,3,4,5,6,7}; //given number for each day of week
         int months[]= new int[]{31,28,31,30,31,30,31,31,30,31,30,31,30};//no of days in each month of year
         int i, dd= 15, mm, yy, pos, j;
@@ -194,5 +231,50 @@ public class Calender {
             }
             calenderArea.append("\n");
         }
+    }
+
+    // Method for filtering events according to date
+    private void filterEventByDate(){
+        int h= 0;
+        dflm = new DefaultListModel<>();// list for storing Event of selected month
+        ind = new ArrayList<>();//list to store the index of Event of selected month
+
+        for (int i= 0; i<Event.dateOfEvents.size();i= i+2){
+            String s= Event.dateOfEvents.elementAt(i);
+            int c= 0;
+            String mon= null;
+
+            Scanner sc= new Scanner(s);
+            sc.useDelimiter("\\s");
+
+            while(sc.hasNext()){
+                mon= sc.next();
+                c++;
+                if(c==3)
+                    break;
+            }
+
+            String yr= sc.next();
+            int monInd= Event.months.indexOf(mon)+1;
+
+            if(monInd== calMonInfo && Integer.parseInt(yr)== calYrInfo){
+                String fit="  "+Event.eventNames.getElementAt(h)+"     ||  "+"TIME: "+ Event.dateOfEvents.elementAt(i+1).substring(3);
+                dflm.addElement(fit);
+                ind.add(h+"");
+            }
+            h++;
+        }
+
+        list= new JList(dflm);
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(count%2==0)
+                {new Event().showDetails(Integer.parseInt(ind.get(list.getSelectedIndex())));}
+                count++;
+            }
+        });
+
+        Jsp.setViewportView(list);//adding updated list every time in Jsp
     }
 }

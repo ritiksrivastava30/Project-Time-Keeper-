@@ -45,7 +45,7 @@ public class Event {
     private String monthName;
     public static JLabel msg;
     public static JButton remind, cancelRemind;
-    ArrayList<String> months = new ArrayList<String>(Arrays.asList("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"));
+    static ArrayList<String> months = new ArrayList<String>(Arrays.asList("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"));
 
     public static void openEvent() throws IOException {
         Event obj = new Event();
