@@ -145,11 +145,12 @@ public class Calender {
         conPane.add(monthNAME);
 
         eventInfo= new JLabel("< EVENT OF THIS MONTH >");
-        eventInfo.setBounds(100, 297, 150,30);
+        eventInfo.setBounds(69, 297, 250,30);
+        eventInfo.setFont(new Font("Serif", Font.CENTER_BASELINE, 15));
         conPane.add(eventInfo);
 
         refresh= new JButton("Refresh");
-        refresh.setBounds(27,360, 90,25);
+        refresh.setBounds(22,360, 80,25);
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,7 +160,7 @@ public class Calender {
         conPane.add(refresh);
 
         Jsp= new JScrollPane();
-        Jsp.setBounds(140,330,210,100);
+        Jsp.setBounds(110,330,250,100);
         filterEventByDate();
         conPane.add(Jsp);
         calenderPrinter();
@@ -246,7 +247,6 @@ public class Calender {
 
             Scanner sc= new Scanner(s);
             sc.useDelimiter("\\s");
-
             while(sc.hasNext()){
                 mon= sc.next();
                 c++;
@@ -258,7 +258,7 @@ public class Calender {
             int monInd= Event.months.indexOf(mon)+1;
 
             if(monInd== calMonInfo && Integer.parseInt(yr)== calYrInfo){
-                String fit="  "+Event.eventNames.getElementAt(h)+"     ||  "+"TIME: "+ Event.dateOfEvents.elementAt(i+1).substring(3);
+                String fit="  "+Event.eventNames.getElementAt(h)+"  ||  "+ Event.dateOfEvents.elementAt(i).substring(3)+"  ||  TIME: "+ Event.dateOfEvents.elementAt(i+1).substring(3);
                 dflm.addElement(fit);
                 ind.add(h+"");
             }
