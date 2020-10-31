@@ -10,5 +10,5 @@ This Software aims to Manange the Schedule of a user by providing various featur
 -Multiple Alarms with different sounds and weekdays filter.
 -Setting up multiple Timers which could run in background.
 -Stopwatch with Lap feature.
--Providing Calendar of desired month and year.
+-Shows Calendar of desired month and year & shows your events in that month.
 -Showing time of different Zones around the globe.
