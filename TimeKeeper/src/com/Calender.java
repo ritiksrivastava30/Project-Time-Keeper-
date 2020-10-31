@@ -1,6 +1,5 @@
 package com;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import java.time.*;
 import java.time.temporal.ChronoField;
 import javax.swing.*;
@@ -13,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static java.awt.Component.LEFT_ALIGNMENT;
 
 public class Calender {
     private JTextField monthField, yearField;

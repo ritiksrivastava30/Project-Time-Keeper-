@@ -2,6 +2,8 @@ package com;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
 import java.awt.event.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,10 +34,12 @@ public class AlarmClock {
     private JButton[] on=new JButton[8];
     public int p1, p2;
     private String localPath;
+    private JTextArea labelArea;
     public static DefaultListModel<String> ls=new DefaultListModel<>();
     DecimalFormat form = new DecimalFormat("00");
     public String[] days={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     static ArrayList<String> flags=new ArrayList<>();
+    public static ArrayList<String> alarmLabel=new ArrayList<>();
     public AlarmClock() { createUIComponents();
     }
 
@@ -276,7 +280,7 @@ public class AlarmClock {
         h=0;
         f = new JFrame();
         f.setTitle("Set Alarm");
-        f.setSize(300, 400);
+        f.setSize(300, 475);
         Content = new JPanel();
         Content.setBounds(100, 100, 300, 400);
         Content.setBackground(new Color(204, 255, 204));
@@ -299,15 +303,15 @@ public class AlarmClock {
         b4 = new JButton("+");
         b4.setBounds(200, 100, 50, 30);
         b3 = new JButton("Set Alarm");
-        b3.setBounds(100, 240, 100, 30);
+        b3.setBounds(100, 245, 100, 30);
         t4 = new JTextField("");
         l3=new JLabel("ALARM");
         l3.setBounds(95, 29, 120, 25);
         l3.setFont(new Font("Serif", Font.PLAIN, 30));
         l4= new JLabel();
-        l4.setBounds(79,202,180,25);
+        l4.setBounds(79,210,180,25);
         b5 = new JButton("Choose Audio");
-        b5.setBounds(90, 300, 120, 30);
+        b5.setBounds(90, 285, 120, 30);
         t1.setHorizontalAlignment(SwingConstants.CENTER);
         t2.setHorizontalAlignment(SwingConstants.CENTER);
         Content.add(l1);
@@ -364,6 +368,16 @@ public class AlarmClock {
                 t1.setText(String.valueOf(h));
             }
         });
+
+        JLabel lb=new JLabel("Label:");
+        lb.setBounds(20,335,50,25);
+        Content.add(lb);
+
+        labelArea = new JTextArea();
+        labelArea.setLineWrap(true);
+        labelArea.setBounds(70, 335, 200, 75);
+        Content.add(labelArea);
+
         localPath= "src\\com\\sim.wav";
         songFilename(localPath);
         b3.addActionListener(new ActionListener() {
@@ -374,6 +388,7 @@ public class AlarmClock {
                 t4.setText(form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText())));
                 p1 = Integer.parseInt(t1.getText());
                 p2 = Integer.parseInt(t2.getText());
+                alarmLabel.add(labelArea.getText());
                 Play.setAlarm(p1,p2,localPath);
                 f.dispose();
             }
@@ -397,6 +412,8 @@ public class AlarmClock {
             }
 
         });
+
+
     }
     private void songFilename(String locPath){
         String p= null;

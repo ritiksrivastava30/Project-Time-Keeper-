@@ -22,6 +22,7 @@ public class Play extends Thread {
     public static int i=0;
     public static ArrayList<Play> pl=new ArrayList<>();
     private String path;
+    private JTextArea labelArea;
 
     public Play(int h, int m,String lP) {
         this.a = h;
@@ -50,7 +51,7 @@ public class Play extends Thread {
             DateTimeFormatter format3 = DateTimeFormatter.ofPattern("ss");
             String formatDateTime3 = now1.format(format3);
             int sec = Integer.parseInt(formatDateTime3);
-            if (a1 == hours && b1 == mins && sec == 0 && dayCheck()==1) {
+            if (a1 == hours && b1 == mins  && dayCheck()==1) {//&& sec == 0
                 SimpleAudioPlayer.setFilePath(this.path);
                 SimpleAudioPlayer.vain();
                 alarmTime();
@@ -64,7 +65,7 @@ public class Play extends Thread {
     }
     public void alarmTime () {
         JFrame frame=new JFrame();
-        frame.setSize(250,250);
+        frame.setSize(280,360);
         frame.setTitle("Alarm");
         JPanel panel=new JPanel();
         panel.setLayout(null);
@@ -78,7 +79,7 @@ public class Play extends Thread {
             }
         });
         JLabel lb=new JLabel();
-        lb.setBounds(70,30,200,50);
+        lb.setBounds(70,30,160,50);
         lb.setText(form.format(a) + ":" + form.format(b));
         lb.setFont(new Font("Serif", Font.BOLD, 45));
         panel.add(lb);
@@ -103,6 +104,17 @@ public class Play extends Thread {
         m.setBounds(70,175,175,25);
         m.setVisible(false);
         panel.add(m);
+
+        JLabel label=new JLabel("Label");
+        label.setBounds(15,200,40,25);
+        panel.add(label);
+
+        labelArea = new JTextArea();
+        labelArea.setLineWrap(true);
+        labelArea.setEditable(false);
+        labelArea.setText(AlarmClock.alarmLabel.get(i-1));
+        labelArea.setBounds(60, 200, 200, 100);
+        panel.add(labelArea);
 
         JButton snooze=new JButton("Snooze");
         snooze.setBounds(125,140,100,35);
@@ -148,6 +160,12 @@ public class Play extends Thread {
                 st2=AlarmClock.flags.get(i);
                 st3= Play.pl.get(i).pathGetter();
                 fileWriter.write(st2 + st + st3+"\n");
+            }
+            fileWriter.write("$\n");
+            for (i = 0; i < AlarmClock.alarmLabel.size(); i++) {
+                st = AlarmClock.alarmLabel.get(i);
+                st = st.replace('\n', '^');
+                fileWriter.write(st + "\n");
             }
             fileWriter.close();
         }
