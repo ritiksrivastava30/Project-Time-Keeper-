@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 
 public class Play extends Thread {
 
-    int a, b;
+    int a, b ,clicked;
     public static int i=0;
     public static ArrayList<Play> pl=new ArrayList<>();
     private String path;
@@ -51,7 +51,7 @@ public class Play extends Thread {
             DateTimeFormatter format3 = DateTimeFormatter.ofPattern("ss");
             String formatDateTime3 = now1.format(format3);
             int sec = Integer.parseInt(formatDateTime3);
-            if (a1 == hours && b1 == mins  && dayCheck()==1) {//&& sec == 0
+            if (a1 == hours && b1 == mins  && sec == 0 && dayCheck()==1) {
                 SimpleAudioPlayer.setFilePath(this.path);
                 SimpleAudioPlayer.vain();
                 alarmTime();
@@ -65,7 +65,7 @@ public class Play extends Thread {
     }
     public void alarmTime () {
         JFrame frame=new JFrame();
-        frame.setSize(280,360);
+        frame.setSize(290,360);
         frame.setTitle("Alarm");
         JPanel panel=new JPanel();
         panel.setLayout(null);
@@ -79,18 +79,18 @@ public class Play extends Thread {
             }
         });
         JLabel lb=new JLabel();
-        lb.setBounds(70,30,160,50);
+        lb.setBounds(80,30,160,50);
         lb.setText(form.format(a) + ":" + form.format(b));
         lb.setFont(new Font("Serif", Font.BOLD, 45));
         panel.add(lb);
 
         JLabel l=new JLabel("ALARM");
-        l.setBounds(80,80,200,50);
+        l.setBounds(90,80,200,50);
         l.setFont(new Font("Serif", Font.PLAIN, 25));
         panel.add(l);
 
         JButton stop=new JButton("Ok! I,m Up");
-        stop.setBounds(25,140,100,35);
+        stop.setBounds(35,140,100,35);
         panel.add(stop);
         stop.addActionListener(new ActionListener() {
             @Override
@@ -101,12 +101,12 @@ public class Play extends Thread {
         });
 
         JLabel m=new JLabel("No more Snoozing allowed");
-        m.setBounds(70,175,175,25);
+        m.setBounds(80,175,175,25);
         m.setVisible(false);
         panel.add(m);
 
-        JLabel label=new JLabel("Label");
-        label.setBounds(15,200,40,25);
+        JLabel label=new JLabel("Label:");
+        label.setBounds(20,200,40,25);
         panel.add(label);
 
         labelArea = new JTextArea();
@@ -117,13 +117,13 @@ public class Play extends Thread {
         panel.add(labelArea);
 
         JButton snooze=new JButton("Snooze");
-        snooze.setBounds(125,140,100,35);
+        snooze.setBounds(135,140,100,35);
         panel.add(snooze);
-//        clicked =0;
+        clicked =0;
         snooze.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //if(clicked<3){
+                if(clicked<3){
                     SimpleAudioPlayer.clip.stop();
                     frame.setVisible(false);
                     try{
@@ -134,12 +134,12 @@ public class Play extends Thread {
                     }
                     SimpleAudioPlayer.vain();
                     frame.setVisible(true);
-//                    clicked++;
-//                }
-//                else{
-//                    snooze.setEnabled(false);
-//                    m.setVisible(true);
-//                }
+                    clicked++;
+                }
+                else{
+                    snooze.setEnabled(false);
+                    m.setVisible(true);
+                }
             }
         });
 

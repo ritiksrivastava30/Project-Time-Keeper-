@@ -8,21 +8,19 @@ import java.awt.event.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 public class AlarmClock {
-    private JTextField t1;
-    private JTextField t2;
-    private JButton b1;
+    private JTextField hourField;
+    private JTextField minField;
+    private JButton minusHour;
     private JLabel l1;
     private JLabel l2;
     private JLabel l3,l4;
     private JPanel Content;
-    private JButton b2;
-    private JTextField t4;
-    private JButton b3;
-    private JButton b4;
-    private JButton b5;
-    private JButton b6;
+    private JButton minusMin;
+    private JButton setAlarm;
+    private JButton plusMin;
+    private JButton chooseFile;
+    private JButton plusHour;
     private JFrame f,fr,fr2;
     private JPanel panel,panel2;
     private JButton addAlarm;
@@ -35,7 +33,7 @@ public class AlarmClock {
     public int p1, p2;
     private String localPath;
     private JTextArea labelArea;
-    public static DefaultListModel<String> ls=new DefaultListModel<>();
+    public static DefaultListModel<String> ls=new DefaultListModel<>();//this will hold the list of all the alarms
     DecimalFormat form = new DecimalFormat("00");
     public String[] days={"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     static ArrayList<String> flags=new ArrayList<>();
@@ -45,6 +43,7 @@ public class AlarmClock {
 
 
     private void createUIComponents() {
+        //creating a frame that will show the list of all the Alarms and provide click listeners for further modification
         fr = new JFrame();
         panel = new JPanel();
         fr.setSize(500, 500);
@@ -68,13 +67,13 @@ public class AlarmClock {
         list.setFont(new Font("Serif", Font.PLAIN, 26));
         panel.add(list);
 
-
+        //adding listener to list
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 ArrayList<Integer> fl=new ArrayList<>(7);
                 index = list.getSelectedIndex();
-                //fr.setVisible(false);
+                //converting String of binary sequence representing activeness to alarm on a particular day of week into an int array so that it could be modified easily
                 for(int y=0;y<=6;y++)
                     fl.add(Integer.parseInt(String.valueOf(flags.get(index).charAt(y))));
                 fr2=new JFrame();
@@ -120,6 +119,7 @@ public class AlarmClock {
                     }
                 });
 
+                //button to save the changes
                 JButton save=new JButton("Save");
                 save.setBounds(60,400,180,30);
                 save.setEnabled(false);
@@ -136,6 +136,7 @@ public class AlarmClock {
                     }
                 });
 
+                //creating 7 buttons using a single loop
                 int temp=145;
                 for(h=1;h<8;h++) {
                     int x=h;//bcoz h was read as 8 in click on button
@@ -203,10 +204,12 @@ public class AlarmClock {
                         flags.remove(index);
                         Play.pl.get(index).stop();
                         Play.pl.remove(index);
+                        alarmLabel.remove(index);
                         Play.i--;
                     }
                 });
 
+                //making a dialogue box to appear on clicking close button without saving changes
                 fr2.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
@@ -224,6 +227,7 @@ public class AlarmClock {
                             l.setFont(new Font("Serif", Font.PLAIN, 15));
                             cpanel.add(l);
 
+                            //this button will save changes
                             JButton yes = new JButton("YES");
                             yes.setBounds(25, 100, 60, 35);
                             cpanel.add(yes);
@@ -239,6 +243,7 @@ public class AlarmClock {
                                 }
                             });
 
+                            //this button will discard changes
                             JButton no = new JButton("NO");
                             no.setBounds(125, 100, 60, 35);
                             cpanel.add(no);
@@ -259,7 +264,7 @@ public class AlarmClock {
             }
         });
 
-
+        //when user confirms to set alarm at entered time
         addAlarm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -268,6 +273,7 @@ public class AlarmClock {
             }
         });
         fr.setVisible(true);
+        //calling a function that creates output stream to write data to the local disk file
         fr.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -276,8 +282,8 @@ public class AlarmClock {
         });
     }
     private void alarmDetails(){
-        m=0;
-        h=0;
+        m=0;//m represents count for minutes
+        h=0;//h represents count for hours
         f = new JFrame();
         f.setTitle("Set Alarm");
         f.setSize(300, 475);
@@ -286,86 +292,84 @@ public class AlarmClock {
         Content.setBackground(new Color(204, 255, 204));
         l1 = new JLabel("Hour");
         l1.setBounds(60, 70, 50, 30);
-        t1 = new JTextField(String.valueOf(h));
-        t1.setBounds(50, 130, 50, 30);
-        t1.setEditable(false);
-        b1 = new JButton("-");
-        b1.setBounds(50, 160, 50, 30);
-        b6 = new JButton("+");
-        b6.setBounds(50, 100, 50, 30);
+        hourField = new JTextField(String.valueOf(h));
+        hourField.setBounds(50, 130, 50, 30);
+        hourField.setEditable(false);
+        minusHour = new JButton("-");
+        minusHour.setBounds(50, 160, 50, 30);
+        plusHour = new JButton("+");
+        plusHour.setBounds(50, 100, 50, 30);
         l2 = new JLabel("Minute");
         l2.setBounds(203, 70, 50, 30);
-        t2 = new JTextField(String.valueOf(m));
-        t2.setBounds(200, 130, 50, 30);
-        t2.setEditable(false);
-        b2 = new JButton("-");
-        b2.setBounds(200, 160, 50, 30);
-        b4 = new JButton("+");
-        b4.setBounds(200, 100, 50, 30);
-        b3 = new JButton("Set Alarm");
-        b3.setBounds(100, 245, 100, 30);
-        t4 = new JTextField("");
+        minField = new JTextField(String.valueOf(m));
+        minField.setBounds(200, 130, 50, 30);
+        minField.setEditable(false);
+        minusMin = new JButton("-");
+        minusMin.setBounds(200, 160, 50, 30);
+        plusMin = new JButton("+");
+        plusMin.setBounds(200, 100, 50, 30);
+        setAlarm = new JButton("Set Alarm");
+        setAlarm.setBounds(100, 245, 100, 30);
         l3=new JLabel("ALARM");
         l3.setBounds(95, 29, 120, 25);
         l3.setFont(new Font("Serif", Font.PLAIN, 30));
         l4= new JLabel();
         l4.setBounds(79,210,180,25);
-        b5 = new JButton("Choose Audio");
-        b5.setBounds(90, 285, 120, 30);
-        t1.setHorizontalAlignment(SwingConstants.CENTER);
-        t2.setHorizontalAlignment(SwingConstants.CENTER);
+        chooseFile = new JButton("Choose Audio");
+        chooseFile.setBounds(90, 285, 120, 30);
+        hourField.setHorizontalAlignment(SwingConstants.CENTER);
+        minField.setHorizontalAlignment(SwingConstants.CENTER);
         Content.add(l1);
         Content.add(l2);
         Content.add(l3);
         Content.add(l4);
-        Content.add(t1);
-        Content.add(t2);
-        Content.add(b1);
-        Content.add(b2);
-        Content.add(t4);
-        Content.add(b3);
-        Content.add(b5);
-        Content.add(b4);
-        Content.add(b6);
+        Content.add(hourField);
+        Content.add(minField);
+        Content.add(minusHour);
+        Content.add(minusMin);
+        Content.add(setAlarm);
+        Content.add(chooseFile);
+        Content.add(plusMin);
+        Content.add(plusHour);
         f.setContentPane(Content);
         f.setLayout(null);
         f.setVisible(true);
 
 
-        b1.addActionListener(new ActionListener() {
+        minusHour.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 h=h-1;
                 if(h<0)
                     h=23;
-                t1.setText(String.valueOf(h));
+                hourField.setText(String.valueOf(h));
 
             }
         });
-        b2.addActionListener(new ActionListener() {
+        minusMin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {m=m-1;
                 if(m<0)
                     m=59;
-                t2.setText(String.valueOf(m));
+                minField.setText(String.valueOf(m));
             }
         });
-        b4.addActionListener(new ActionListener() {
+        plusMin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 m=m+1;
                 if(m>59)
                     m=0;
-                t2.setText(String.valueOf(m));
+                minField.setText(String.valueOf(m));
             }
         });
-        b6.addActionListener(new ActionListener() {
+        plusHour.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 h=h+1;
                 if(h>23)
                     h=0;
-                t1.setText(String.valueOf(h));
+                hourField.setText(String.valueOf(h));
             }
         });
 
@@ -373,6 +377,7 @@ public class AlarmClock {
         lb.setBounds(20,335,50,25);
         Content.add(lb);
 
+        //adding text area where we can add label to an alarm
         labelArea = new JTextArea();
         labelArea.setLineWrap(true);
         labelArea.setBounds(70, 335, 200, 75);
@@ -380,15 +385,15 @@ public class AlarmClock {
 
         localPath= "src\\com\\sim.wav";
         songFilename(localPath);
-        b3.addActionListener(new ActionListener() {
+        setAlarm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 flags.add("1111111");
-                ls.addElement("  "+form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText()))+"                Status: ON");
-                t4.setText(form.format(Integer.parseInt(t1.getText())) + ":" + form.format(Integer.parseInt(t2.getText())));
-                p1 = Integer.parseInt(t1.getText());
-                p2 = Integer.parseInt(t2.getText());
+                ls.addElement("  "+form.format(Integer.parseInt(hourField.getText())) + ":" + form.format(Integer.parseInt(minField.getText()))+"                Status: ON");
+                p1 = Integer.parseInt(hourField.getText());
+                p2 = Integer.parseInt(minField.getText());
                 alarmLabel.add(labelArea.getText());
+                //calling set alarm function by of Play class by passing hour and minute as argument
                 Play.setAlarm(p1,p2,localPath);
                 f.dispose();
             }
@@ -396,7 +401,7 @@ public class AlarmClock {
         });
 
         //SimpleAudioPlayer.filePath = new File("src\\com\\sim.wav");
-        b5.addActionListener(new ActionListener() {
+        chooseFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = new JFileChooser();
