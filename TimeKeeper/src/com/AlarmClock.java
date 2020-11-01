@@ -28,8 +28,8 @@ public class AlarmClock {
     public static int index;
     private int m,h;
     private JLabel[] day=new JLabel[8];
-    private JButton[] off=new JButton[8];
-    private JButton[] on=new JButton[8];
+    private JButton[] off=new JButton[9];
+    private JButton[] on=new JButton[9];
     public int p1, p2;
     private String localPath;
     private JTextArea labelArea;
@@ -71,13 +71,13 @@ public class AlarmClock {
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                ArrayList<Integer> fl=new ArrayList<>(7);
+                ArrayList<Integer> fl=new ArrayList<>(8);
                 index = list.getSelectedIndex();
                 //converting String of binary sequence representing activeness to alarm on a particular day of week into an int array so that it could be modified easily
-                for(int y=0;y<=6;y++)
+                for(int y=0;y<=7;y++)
                     fl.add(Integer.parseInt(String.valueOf(flags.get(index).charAt(y))));
                 fr2=new JFrame();
-                fr2.setSize(315,520);
+                fr2.setSize(315,550);
                 panel2=new JPanel();
                 panel2.setLayout(null);
                 fr2.add(panel2);
@@ -121,14 +121,14 @@ public class AlarmClock {
 
                 //button to save the changes
                 JButton save=new JButton("Save");
-                save.setBounds(60,400,180,30);
+                save.setBounds(60,430,180,30);
                 save.setEnabled(false);
                 panel2.add(save);
                 save.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String s="";
-                        for(int p=0;p<7;p++){
+                        for(int p=0;p<8;p++){
                             s=s+fl.get(p).toString();
                         }
                         flags.set(index,s);
@@ -137,7 +137,7 @@ public class AlarmClock {
                 });
 
                 //creating 7 buttons using a single loop
-                int temp=145;
+                int temp=175;
                 for(h=1;h<8;h++) {
                     int x=h;//bcoz h was read as 8 in click on button
                     day[x] = new JLabel(days[x - 1] + ":");
@@ -185,6 +185,48 @@ public class AlarmClock {
                     temp=temp+35;
                 }
 
+                JLabel math=new JLabel("Math Problems: ");
+                math.setBounds(25, 135, 125, 30);
+                math.setFont(new Font("Serif", Font.PLAIN, 18));
+                panel2.add(math);
+
+                on[8]=new JButton("ON");
+                on[8].setBounds(150,135,60,30);
+                panel2.add(on[8]);
+
+                off[8]=new JButton("OFF");
+                off[8].setBounds(210,135,60,30);
+                panel2.add(off[8]);
+                on[8].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        save.setEnabled(true);
+                        on[8].setEnabled(false);
+                        off[8].setEnabled(true);
+                        fl.set(7,1);
+                    }
+                });
+
+                off[8].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        save.setEnabled(true);
+                        on[8].setEnabled(true);
+                        off[8].setEnabled(false);
+                        fl.set(7,0);
+                    }
+                });
+
+                if (fl.get(7) == 1) {
+                    on[8].setEnabled(false);
+                    off[8].setEnabled(true);
+                }
+                else{
+                    off[8].setEnabled(false);
+                    on[8].setEnabled(true);
+                }
+
+
 
                 if(ls.get(index).substring(ls.get(index).length()-2,ls.get(index).length()).equals("ON"))
                     on[0].setEnabled(false);
@@ -194,7 +236,7 @@ public class AlarmClock {
 
 
                 JButton delete=new JButton("Delete Alarm");
-                delete.setBounds(60,440,180,30);
+                delete.setBounds(60,470,180,30);
                 panel2.add(delete);
                 delete.addActionListener(new ActionListener() {
                     @Override
@@ -235,7 +277,7 @@ public class AlarmClock {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     String s = "";
-                                    for (int p = 0; p < 7; p++) {
+                                    for (int p = 0; p < 8; p++) {
                                         s = s + fl.get(p).toString();
                                     }
                                     flags.set(index, s);
@@ -388,7 +430,7 @@ public class AlarmClock {
         setAlarm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                flags.add("1111111");
+                flags.add("11111110");
                 ls.addElement("  "+form.format(Integer.parseInt(hourField.getText())) + ":" + form.format(Integer.parseInt(minField.getText()))+"                Status: ON");
                 p1 = Integer.parseInt(hourField.getText());
                 p2 = Integer.parseInt(minField.getText());

@@ -100,10 +100,10 @@ public class firstPage extends JFrame implements Runnable{
                     temp = sc.nextLine();
                     if (temp.equals("$"))
                         break;
-                    AlarmClock.flags.add(temp.substring(0,7));
-                    AlarmClock.ls.addElement(temp.substring(7,40));
-                    Play.setAlarm(Integer.parseInt(temp.substring(9,11)),Integer.parseInt(temp.substring(12,14)),
-                            temp.substring(40));
+                    AlarmClock.flags.add(temp.substring(0,8));
+                    AlarmClock.ls.addElement(temp.substring(8,41));
+                    Play.setAlarm(Integer.parseInt(temp.substring(10,12)),Integer.parseInt(temp.substring(13,15)),
+                            temp.substring(41));
 
                 }
 

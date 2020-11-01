@@ -1,5 +1,17 @@
-1111111  00:19                Status: ONsrc\com\sim.wav
-1111111  00:40                Status: ONsrc\com\sim.wav
+11111110  11:15                Status: ONsrc\com\sim.wav
+11111111  11:16                Status: ONsrc\com\sim.wav
+11111110  11:20                Status: ONsrc\com\sim.wav
+11111110  11:21                Status: ONsrc\com\sim.wav
+11111111  11:23                Status: ONsrc\com\sim.wav
+11111110  11:24                Status: ONsrc\com\sim.wav
+11111110  11:27                Status: OFFsrc\com\sim.wav
+11111110  11:28                Status: ONsrc\com\sim.wav
 $
-My an^j^n
-dzv^eav
+
+
+
+
+
+
+
+
