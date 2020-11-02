@@ -1,11 +1,13 @@
 11111110  11:15                Status: ONsrc\com\sim.wav
-11111111  11:16                Status: ONsrc\com\sim.wav
+11001111  11:16                Status: ONsrc\com\sim.wav
 11111110  11:20                Status: ONsrc\com\sim.wav
 11111110  11:21                Status: ONsrc\com\sim.wav
-11111111  11:23                Status: ONsrc\com\sim.wav
+11101111  11:23                Status: ONsrc\com\sim.wav
 11111110  11:24                Status: ONsrc\com\sim.wav
 11111110  11:27                Status: OFFsrc\com\sim.wav
 11111110  11:28                Status: ONsrc\com\sim.wav
+11111110  12:12                Status: ONC:\Users\RITIK SRIVASTAVA\Documents\Tracks\Track 4.wav
+11111110  18:31                Status: ONsrc\com\sim.wav
 $
 
 
@@ -14,4 +16,6 @@ $
 
 
 
+
+Softa
 

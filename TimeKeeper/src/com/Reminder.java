@@ -19,7 +19,8 @@ public class Reminder extends Thread{
     private JFrame frame;
     private JPanel panel;
     DecimalFormat form = new DecimalFormat("00");
-    public static ZoneId zone = ZoneId.systemDefault();
+
+//    public static ZoneId zone = ZoneId.systemDefault();
     private String remDate,remTime;
     public static ArrayList<String> reminders = new ArrayList<String>();
 
@@ -38,11 +39,11 @@ public class Reminder extends Thread{
     public void run() {
         while (true) {
 
-            LocalDateTime now = LocalDateTime.now(zone);
+            LocalDateTime now = LocalDateTime.now(firstPage.zone);
             DateTimeFormatter format1 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             String date = now.format(format1);
 
-            LocalDateTime now1 = LocalDateTime.now(zone);
+            LocalDateTime now1 = LocalDateTime.now(firstPage.zone);
             DateTimeFormatter format2 = DateTimeFormatter.ofPattern("HH:mm");
             String time = now1.format(format2);
 

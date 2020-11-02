@@ -41,7 +41,8 @@ public class Play extends Thread {
         while (true) {
             int a1=a;
             int b1=b;
-            LocalDateTime now1 = LocalDateTime.now();
+            //start change
+            LocalDateTime now1 = LocalDateTime.now(firstPage.zone);
             DateTimeFormatter format2 = DateTimeFormatter.ofPattern("HH");
             String formatDateTime2 = now1.format(format2);
             int hours = Integer.parseInt(formatDateTime2);
